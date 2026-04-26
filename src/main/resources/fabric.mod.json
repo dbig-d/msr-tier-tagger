@@ -1,0 +1,37 @@
+{
+	"schemaVersion": 1,
+	"id": "msr-tier-tagger",
+	"version": "${version}",
+	"name": "MSR Tier Tagger",
+	"description": "The Official MSR Tier Tagger Mod.",
+	"authors": [
+		"__bigd"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "MIT",
+	"icon": "assets/msr-tier-tagger/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"net.dc.msrtiertagger.MSRTierTagger"
+		],
+		"fabric-datagen": [
+			"net.dc.msrtiertagger.MSRTierTaggerDataGenerator"
+		],
+		"client": [
+			"net.dc.msrtiertagger.MSRTierTaggerClient"
+		]
+	},
+	"mixins": [
+		"msr-tier-tagger.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.19.2",
+		"minecraft": "~1.21.11",
+		"java": ">=21",
+		"fabric-api": "*"
+	}
+}
