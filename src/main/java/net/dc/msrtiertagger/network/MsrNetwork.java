@@ -2,10 +2,8 @@ package net.dc.msrtiertagger.network;
 
 import net.dc.msrtiertagger.MSRTierTagger;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
 
@@ -14,30 +12,32 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Handles the MSR peer discovery handshake.
+ * Handles the MSR peer discovery handshake using the 1.21.1 payload API.
  *
- * When you join a server this mod sends a small custom packet on the
- * "msr-tier-tagger:hello" channel containing your UUID.
- * Any other player running this mod receives that packet and adds
- * your UUID to their confirmed-peers set.
+ * In 1.21.1+, custom packets require a registered CustomPayload type.
+ * We define MsrHelloPayload as a record that carries the sender's UUID string,
+ * register it with Fabric, then send/receive it on join/disconnect.
  */
 public class MsrNetwork {
 
-    // ── Payload record ────────────────────────────────────────────────────────
+    // ── Payload type ──────────────────────────────────────────────────────────
 
     /**
-     * CustomPayload implementation for the MSR hello packet.
-     * Carries just the sender's UUID string.
+     * The custom payload record for the MSR handshake.
+     * Carries the sender's UUID string so receivers can add them to the peer set.
      */
-    public record HelloPayload(String uuid) implements CustomPayload {
+    public record MsrHelloPayload(String uuid) implements CustomPayload {
 
-        public static final CustomPayload.Id<HelloPayload> ID =
+        // The unique ID for this payload type
+        public static final CustomPayload.Id<MsrHelloPayload> ID =
                 new CustomPayload.Id<>(Identifier.of(MSRTierTagger.MOD_ID, "hello"));
 
-        public static final PacketCodec<PacketByteBuf, HelloPayload> CODEC =
-                PacketCodecs.STRING
-                        .xmap(HelloPayload::new, HelloPayload::uuid)
-                        .cast();
+        // Codec tells Fabric how to read/write this payload over the network
+        public static final PacketCodec<PacketByteBuf, MsrHelloPayload> CODEC =
+                PacketCodec.of(
+                        (payload, buf) -> buf.writeString(payload.uuid()),   // encoder
+                        buf -> new MsrHelloPayload(buf.readString())          // decoder
+                );
 
         @Override
         public CustomPayload.Id<? extends CustomPayload> getId() {
@@ -47,39 +47,45 @@ public class MsrNetwork {
 
     // ── Peer tracking ─────────────────────────────────────────────────────────
 
+    // UUIDs of players on this server confirmed to have the mod installed
     private static final Set<String> CONFIRMED_PEERS =
             Collections.newSetFromMap(new ConcurrentHashMap<>());
 
     // ── Registration ─────────────────────────────────────────────────────────
 
+    /**
+     * Called from MSRTierTaggerClient.onInitializeClient().
+     * Registers the payload type and the receiver handler.
+     */
     public static void register() {
-        // Register the payload type so Fabric knows how to encode/decode it
-        PayloadTypeRegistry.playC2S().register(HelloPayload.ID, HelloPayload.CODEC);
-
-        // Listen for hello packets from other MSR mod users
-        ClientPlayNetworking.registerGlobalReceiver(HelloPayload.ID,
+        // Register the receiver — runs when another MSR mod user sends us a hello
+        ClientPlayNetworking.registerGlobalReceiver(
+                MsrHelloPayload.ID,
                 (payload, context) -> {
-                    String peerUuid = payload.uuid();
-                    CONFIRMED_PEERS.add(peerUuid.toLowerCase());
-                    MSRTierTagger.LOGGER.debug("[MSR] Confirmed peer: {}", peerUuid);
+                    // context.client().execute() ensures we're on the main thread
+                    context.client().execute(() -> {
+                        CONFIRMED_PEERS.add(payload.uuid().toLowerCase());
+                        MSRTierTagger.LOGGER.debug("[MSR] Confirmed peer: {}", payload.uuid());
+                    });
                 }
         );
 
-        MSRTierTagger.LOGGER.info("[MSR] Network channel registered.");
+        MSRTierTagger.LOGGER.info("[MSR] Network payload registered.");
     }
 
-    // ── Handshake send ────────────────────────────────────────────────────────
+    // ── Sending ───────────────────────────────────────────────────────────────
 
     /**
      * Send our UUID to everyone else on the server running this mod.
-     * Called once on server join.
+     * Called once from MSRTierTaggerClient when joining a server.
      */
     public static void sendHandshake(String myUuid) {
         try {
-            ClientPlayNetworking.send(new HelloPayload(myUuid));
+            ClientPlayNetworking.send(new MsrHelloPayload(myUuid));
             MSRTierTagger.LOGGER.info("[MSR] Handshake sent (UUID: {})", myUuid);
         } catch (Exception e) {
-            MSRTierTagger.LOGGER.warn("[MSR] Could not send handshake: {}", e.getMessage());
+            // Safe to ignore — throws if not connected or channel not open yet
+            MSRTierTagger.LOGGER.debug("[MSR] Could not send handshake: {}", e.getMessage());
         }
     }
 

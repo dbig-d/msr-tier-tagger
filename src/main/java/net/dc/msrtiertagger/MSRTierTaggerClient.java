@@ -5,42 +5,63 @@ import net.dc.msrtiertagger.network.MsrNetwork;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 
 /**
  * Client-side entrypoint for MSR Tier Tagger.
- * Wires together: tier data fetching, network handshake, and cleanup on disconnect.
  */
 public class MSRTierTaggerClient implements ClientModInitializer {
 
     /**
-     * GitHub raw URL for the MSR tier JSON.
-     * After pushing msr_tiers.json to your GitHub repo, paste the raw URL here.
-     * Example: https://raw.githubusercontent.com/dbig-d/msr-tier-tagger/main/msr_tiers.json
+     * Raw GitHub URL for msr_tiers.json.
+     * After pushing the file to your repo, this URL is already correct
+     * assuming your GitHub username is dbig-d.
+     * If not, replace dbig-d with your actual GitHub username.
      */
     public static final String TIER_JSON_URL =
             "https://raw.githubusercontent.com/dbig-d/msr-tier-tagger/main/msr_tiers.json";
 
     @Override
     public void onInitializeClient() {
-        MSRTierTagger.LOGGER.info("[MSR Tier Tagger] Client initialised.");
+        MSRTierTagger.LOGGER.info("[MSR Tier Tagger] Client initialising...");
 
-        // Register the MSR network channel so we can receive handshakes from peers
+        // Step 1: Register the payload type with Fabric's type registry FIRST.
+        // This must happen before registering the receiver or sending anything.
+        // PLAY_C2S = client-to-server direction (we send to server, server fans out)
+        // Since mcpvp.club won't have our mod, we register both directions
+        // so the client can at least send without crashing.
+        PayloadTypeRegistry.playC2S().register(
+                MsrNetwork.MsrHelloPayload.ID,
+                MsrNetwork.MsrHelloPayload.CODEC
+        );
+        PayloadTypeRegistry.playS2C().register(
+                MsrNetwork.MsrHelloPayload.ID,
+                MsrNetwork.MsrHelloPayload.CODEC
+        );
+
+        // Step 2: Register the network receiver
         MsrNetwork.register();
 
-        // Fetch tier data from GitHub when the client starts up
+        // Step 3: Fetch tier data from GitHub when the game starts
         ClientLifecycleEvents.CLIENT_STARTED.register(client ->
                 TierRegistry.fetchAsync(TIER_JSON_URL)
         );
 
-        // When joining a server, announce ourselves to other MSR mod users
+        // Step 4: When joining a server, announce ourselves to other MSR users
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
             if (client.player != null) {
-                MsrNetwork.sendHandshake(client.player.getUuidAsString());
+                // Small delay to ensure the connection is fully established
+                client.execute(() ->
+                        MsrNetwork.sendHandshake(client.player.getUuidAsString())
+                );
             }
         });
-        // Clean up peer list when leaving a server
+
+        // Step 5: Clean up when leaving a server
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) ->
                 MsrNetwork.clearPeers()
         );
+
+        MSRTierTagger.LOGGER.info("[MSR Tier Tagger] Client ready.");
     }
 }
