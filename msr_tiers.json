@@ -1,0 +1,388 @@
+{
+  "_comment": "MSR Tier Registry - edit this file and push to GitHub to update tiers for all mod users.",
+  "_tiers": "LT5, HT5, LT4, HT4, LT3, HT3, LT2, HT2, LT1, HT1",
+  "_colours": "LT5/HT5/LT4/HT4=white, LT3/HT3=bronze(#CD7F32), LT2/HT2=silver(#C0C0C0), LT1/HT1=gold(#FFD700)",
+  "_note": "UUIDs can be looked up at https://mcuuid.net — paste the username and copy the dashed UUID format",
+
+  "players": [
+    {
+      "username": "__bigd",
+      "uuid": "PASTE-UUID-HERE",
+      "overall": "LT3",
+      "rank": 13,
+      "tiers": {
+        "sword": "LT3",
+        "axe":   "LT3",
+        "uhc":   "LT4",
+        "mace":  "LT4",
+        "smp":   "LT4"
+      },
+      "special": null
+    },
+    {
+      "username": "cricketrlz0000",
+      "uuid": "PASTE-UUID-HERE",
+      "overall": "HT1",
+      "rank": 1,
+      "tiers": {
+        "sword": "HT1",
+        "axe":   "HT1",
+        "uhc":   "HT1",
+        "mace":  "HT1",
+        "smp":   "HT1"
+      },
+      "special": "KING"
+    },
+    {
+      "username": "xqste",
+      "uuid": "PASTE-UUID-HERE",
+      "overall": "HT1",
+      "rank": 2,
+      "tiers": {
+        "sword": "HT1",
+        "axe":   "HT1",
+        "uhc":   "HT1",
+        "mace":  "HT1",
+        "smp":   "HT1"
+      },
+      "special": null
+    },
+    {
+      "username": "Piqt",
+      "uuid": "PASTE-UUID-HERE",
+      "overall": "LT1",
+      "rank": 3,
+      "tiers": {
+        "sword": "LT1",
+        "axe":   "LT1",
+        "uhc":   "LT1",
+        "mace":  "LT1",
+        "smp":   "LT1"
+      },
+      "special": null
+    },
+    {
+      "username": "icedcoffe",
+      "uuid": "PASTE-UUID-HERE",
+      "overall": "LT1",
+      "rank": 4,
+      "tiers": {
+        "sword": "LT1",
+        "axe":   "LT1",
+        "uhc":   "LT1",
+        "mace":  "LT1",
+        "smp":   "LT1"
+      },
+      "special": null
+    },
+    {
+      "username": "MrP3nguin_",
+      "uuid": "PASTE-UUID-HERE",
+      "overall": "LT1",
+      "rank": 5,
+      "tiers": {
+        "sword": "LT1",
+        "axe":   "LT1",
+        "uhc":   "LT1",
+        "mace":  "LT1",
+        "smp":   "LT1"
+      },
+      "special": null
+    },
+    {
+      "username": "Brojules",
+      "uuid": "PASTE-UUID-HERE",
+      "overall": "HT2",
+      "rank": 6,
+      "tiers": {
+        "sword": "HT2",
+        "axe":   "HT2",
+        "uhc":   "HT2",
+        "mace":  "HT2",
+        "smp":   "HT2"
+      },
+      "special": null
+    },
+    {
+      "username": "__synn",
+      "uuid": "PASTE-UUID-HERE",
+      "overall": "HT2",
+      "rank": 7,
+      "tiers": {
+        "sword": "HT2",
+        "axe":   "HT2",
+        "uhc":   "HT2",
+        "mace":  "HT2",
+        "smp":   "HT2"
+      },
+      "special": null
+    },
+    {
+      "username": "Henrry999",
+      "uuid": "PASTE-UUID-HERE",
+      "overall": "LT2",
+      "rank": 8,
+      "tiers": {
+        "sword": "LT2",
+        "axe":   "LT2",
+        "uhc":   "LT2",
+        "mace":  "LT2",
+        "smp":   "LT2"
+      },
+      "special": "RETIRED"
+    },
+    {
+      "username": "WoodieMC",
+      "uuid": "PASTE-UUID-HERE",
+      "overall": "LT2",
+      "rank": 9,
+      "tiers": {
+        "sword": "LT2",
+        "axe":   "LT2",
+        "uhc":   "LT2",
+        "mace":  "LT2",
+        "smp":   "LT2"
+      },
+      "special": null
+    },
+    {
+      "username": "Velox2102",
+      "uuid": "PASTE-UUID-HERE",
+      "overall": "HT3",
+      "rank": 10,
+      "tiers": {
+        "sword": "HT3",
+        "axe":   "HT3",
+        "uhc":   "HT3",
+        "mace":  "HT3",
+        "smp":   "HT3"
+      },
+      "special": null
+    },
+    {
+      "username": "Jaynaka15",
+      "uuid": "PASTE-UUID-HERE",
+      "overall": "HT3",
+      "rank": 11,
+      "tiers": {
+        "sword": "HT3",
+        "axe":   "HT3",
+        "uhc":   "HT3",
+        "mace":  "HT3",
+        "smp":   "HT3"
+      },
+      "special": null
+    },
+    {
+      "username": "D2ck000",
+      "uuid": "PASTE-UUID-HERE",
+      "overall": "LT3",
+      "rank": 12,
+      "tiers": {
+        "sword": "LT3",
+        "axe":   "LT3",
+        "uhc":   "LT3",
+        "mace":  "LT3",
+        "smp":   "LT3"
+      },
+      "special": null
+    },
+    {
+      "username": "flashgrnade",
+      "uuid": "PASTE-UUID-HERE",
+      "overall": "LT3",
+      "rank": 13,
+      "tiers": {
+        "sword": "LT3",
+        "axe":   "LT3",
+        "uhc":   "LT3",
+        "mace":  "LT3",
+        "smp":   "LT3"
+      },
+      "special": null,
+      "_note": "username changed to __bigd — keep both entries pointing to same UUID so old/new name both show tier"
+    },
+    {
+      "username": "contagiousfart",
+      "uuid": "PASTE-UUID-HERE",
+      "overall": "LT3",
+      "rank": 14,
+      "tiers": {
+        "sword": "LT3",
+        "axe":   "LT3",
+        "uhc":   "LT3",
+        "mace":  "LT3",
+        "smp":   "LT3"
+      },
+      "special": null
+    },
+    {
+      "username": "CoolIcee",
+      "uuid": "PASTE-UUID-HERE",
+      "overall": "LT3",
+      "rank": 15,
+      "tiers": {
+        "sword": "LT3",
+        "axe":   "LT3",
+        "uhc":   "LT3",
+        "mace":  "LT3",
+        "smp":   "LT3"
+      },
+      "special": null
+    },
+    {
+      "username": "_Knife__",
+      "uuid": "PASTE-UUID-HERE",
+      "overall": "HT4",
+      "rank": 16,
+      "tiers": {
+        "sword": "HT4",
+        "axe":   "HT4",
+        "uhc":   "HT4",
+        "mace":  "HT4",
+        "smp":   "HT4"
+      },
+      "special": null
+    },
+    {
+      "username": "Gameories",
+      "uuid": "PASTE-UUID-HERE",
+      "overall": "HT4",
+      "rank": 17,
+      "tiers": {
+        "sword": "HT4",
+        "axe":   "HT4",
+        "uhc":   "HT4",
+        "mace":  "HT4",
+        "smp":   "HT4"
+      },
+      "special": null
+    },
+    {
+      "username": "Darth_dragony",
+      "uuid": "PASTE-UUID-HERE",
+      "overall": "LT4",
+      "rank": 18,
+      "tiers": {
+        "sword": "LT4",
+        "axe":   "LT4",
+        "uhc":   "LT4",
+        "mace":  "LT4",
+        "smp":   "LT4"
+      },
+      "special": null
+    },
+    {
+      "username": "bigmaclover21",
+      "uuid": "PASTE-UUID-HERE",
+      "overall": "LT4",
+      "rank": 19,
+      "tiers": {
+        "sword": "LT4",
+        "axe":   "LT4",
+        "uhc":   "LT4",
+        "mace":  "LT4",
+        "smp":   "LT4"
+      },
+      "special": null
+    },
+    {
+      "username": "BizarreOwl309",
+      "uuid": "PASTE-UUID-HERE",
+      "overall": "LT5",
+      "rank": 20,
+      "tiers": {
+        "sword": "LT5",
+        "axe":   "LT5",
+        "uhc":   "LT5",
+        "mace":  "LT5",
+        "smp":   "LT5"
+      },
+      "special": null
+    },
+    {
+      "username": "Strongman09",
+      "uuid": "PASTE-UUID-HERE",
+      "overall": "LT5",
+      "rank": 21,
+      "tiers": {
+        "sword": "LT5",
+        "axe":   "LT5",
+        "uhc":   "LT5",
+        "mace":  "LT5",
+        "smp":   "LT5"
+      },
+      "special": "RETIRED"
+    },
+    {
+      "username": "ZzAsleepzZ",
+      "uuid": "PASTE-UUID-HERE",
+      "overall": "LT5",
+      "rank": 22,
+      "tiers": {
+        "sword": "LT5",
+        "axe":   "LT5",
+        "uhc":   "LT5",
+        "mace":  "LT5",
+        "smp":   "LT5"
+      },
+      "special": null
+    },
+    {
+      "username": "epicddss",
+      "uuid": "PASTE-UUID-HERE",
+      "overall": "LT5",
+      "rank": 23,
+      "tiers": {
+        "sword": "LT5",
+        "axe":   "LT5",
+        "uhc":   "LT5",
+        "mace":  "LT5",
+        "smp":   "LT5"
+      },
+      "special": null
+    },
+    {
+      "username": "BigA_1",
+      "uuid": "PASTE-UUID-HERE",
+      "overall": "LT5",
+      "rank": 24,
+      "tiers": {
+        "sword": "LT5",
+        "axe":   "LT5",
+        "uhc":   "LT5",
+        "mace":  "LT5",
+        "smp":   "LT5"
+      },
+      "special": null
+    },
+    {
+      "username": "Bronzon155",
+      "uuid": "PASTE-UUID-HERE",
+      "overall": "LT5",
+      "rank": 25,
+      "tiers": {
+        "sword": "LT5",
+        "axe":   "LT5",
+        "uhc":   "LT5",
+        "mace":  "LT5",
+        "smp":   "LT5"
+      },
+      "special": "RETIRED"
+    },
+    {
+      "username": "g0d0rs4tan",
+      "uuid": "PASTE-UUID-HERE",
+      "overall": "LT5",
+      "rank": 26,
+      "tiers": {
+        "sword": "LT5",
+        "axe":   "LT5",
+        "uhc":   "LT5",
+        "mace":  "LT5",
+        "smp":   "LT5"
+      },
+      "special": "RETIRED"
+    }
+  ]
+}

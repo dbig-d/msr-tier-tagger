@@ -1,3 +1,4 @@
+
 {
 	"schemaVersion": 1,
 	"id": "msr-tier-tagger",
@@ -8,18 +9,15 @@
 		"__bigd"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"homepage": "https://github.com/dbig-d/msr-tier-tagger",
+		"sources": "https://github.com/dbig-d/msr-tier-tagger"
 	},
 	"license": "MIT",
 	"icon": "assets/msr-tier-tagger/icon.png",
-	"environment": "*",
+	"environment": "client",
 	"entrypoints": {
 		"main": [
 			"net.dc.msrtiertagger.MSRTierTagger"
-		],
-		"fabric-datagen": [
-			"net.dc.msrtiertagger.MSRTierTaggerDataGenerator"
 		],
 		"client": [
 			"net.dc.msrtiertagger.MSRTierTaggerClient"
