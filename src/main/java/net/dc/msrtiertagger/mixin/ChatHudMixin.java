@@ -44,10 +44,10 @@ public abstract class ChatHudMixin {
 
 			// Require the sender to have confirmed they have the mod
 			// via the handshake, unless UUID hasn't been filled in yet.
-			boolean uuidKnown = player.uuid() != null && !player.uuid().startsWith("PASTE");
-			if (uuidKnown && !MsrNetwork.isPeer(player.uuid())) {
-				return original;
-			}
+			// boolean uuidKnown = player.uuid() != null && !player.uuid().startsWith("PASTE");
+			// if (uuidKnown && !MsrNetwork.isPeer(player.uuid())) {
+				// return original;
+			// }
 
 			// Prepend badge:  [HT1👑] <PlayerName> message
 			MutableText badge = TierRegistry.buildBadge(player);
