@@ -19,7 +19,7 @@ public class MSRTierTaggerClient implements ClientModInitializer {
      * If not, replace dbig-d with your actual GitHub username.
      */
     public static final String TIER_JSON_URL =
-            "https://raw.githubusercontent.com/dbig-d/msr-tier-tagger/main/msr_tiers.json";
+            "https://raw.githubusercontent.com/dbig-d/msr-tier-tagger/master/msr_tiers.json";
 
     @Override
     public void onInitializeClient() {
