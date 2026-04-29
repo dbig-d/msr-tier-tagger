@@ -39,14 +39,20 @@ public abstract class PlayerEntityRendererMixin {
 
             if (opt.isPresent()) {
                 MutableText badge = TierRegistry.buildBadge(opt.get());
-                state.displayName = badge.append(state.displayName);
+                // Use Text.literal(username) with explicit white — this fully breaks
+                // style inheritance so the name never picks up the tier colour
+                MutableText whiteName = Text.literal(username)
+                        .setStyle(Style.EMPTY.withColor(Formatting.WHITE).withBold(false));
+                state.displayName = badge.append(whiteName);
                 return;
             }
 
             // [?] for players not in JSON — comment out these 2 lines when done testing
             MutableText unknown = Text.literal("[?] ")
                     .setStyle(Style.EMPTY.withColor(Formatting.DARK_GRAY).withItalic(true));
-            state.displayName = unknown.append(state.displayName);
+            MutableText whiteUnknownName = Text.literal(username)
+                    .setStyle(Style.EMPTY.withColor(Formatting.WHITE).withBold(false));
+            state.displayName = unknown.append(whiteUnknownName);
 
         } catch (Exception e) {
             // never crash for cosmetics

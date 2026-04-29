@@ -106,16 +106,25 @@ public class TierRegistry {
         boolean bold  = tier != null && tier.startsWith("H");
         String suffix = "";
 
-        if ("KING".equals(player.special()))    suffix = "👑";
-        else if ("RETIRED".equals(player.special())) suffix = "†";
-        else if ("DEV".equals(player.special()))     suffix = "⚙";
+        if ("KING".equals(player.special()))         suffix = " 👑";
+        else if ("RETIRED".equals(player.special())) suffix = " †";
+        else if ("DEV".equals(player.special()))     suffix = " ⚙";
 
-        String label = "[" + (tier != null ? tier : "?") + suffix + "]";
+        // Format:  HT1 |   or   LT3 |
+        // Tier name is coloured + bold (if HT), separator is white dim
+        String tierLabel = (tier != null ? tier : "?") + suffix;
 
-        return Text.literal(label + " ")
+        MutableText tierText = Text.literal(tierLabel)
                 .setStyle(Style.EMPTY
                         .withColor(tierColour(tier))
                         .withBold(bold));
+
+        MutableText separator = Text.literal(" | ")
+                .setStyle(Style.EMPTY
+                        .withColor(Formatting.GRAY)
+                        .withBold(false));
+
+        return tierText.append(separator);
     }
 
     // ── PlayerTier record ─────────────────────────────────────────────────────
