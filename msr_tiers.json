@@ -1,23 +1,47 @@
 {
   "_comment": "MSR Tier Registry - edit this file and push to GitHub to update tiers for all mod users.",
   "_tiers": "LT5, HT5, LT4, HT4, LT3, HT3, LT2, HT2, LT1, HT1",
-  "_colours": "LT5/HT5/LT4/HT4=white, LT3/HT3=bronze(#CD7F32), LT2/HT2=silver(#C0C0C0), LT1/HT1=gold(#FFD700)",
-  "_note": "UUIDs can be looked up at https://mcuuid.net — paste the username and copy the dashed UUID format",
+  "_note": "UUIDs: https://mcuuid.net — use dashed format. P prefix = needs fixing (remove the P).",
 
   "players": [
     {
       "username": "__bigd",
-      "uuid": "P6c48cb74-1aad-42dc-8b4a-3248e8574ed0",
+      "uuid": "6c48cb74-1aad-42dc-8b4a-3248e8574ed0",
       "overall": "LT3",
       "rank": 13,
       "tiers": {
-        "sword": "LT3",
-        "axe":   "LT3",
-        "uhc":   "LT4",
-        "mace":  "LT4",
-        "smp":   "LT4"
+        "sword":   "LT2",
+        "axe":     "HT3",
+        "uhc":     "HT4",
+        "mace":    "LT4",
+        "crystal": "HT5",
+        "smp":     "LT3",
+        "nsmp":    "LT3",
+        "dpot":    "LT4",
+        "npot":    "HT4",
+        "hybrid":  "LT3"
       },
       "special": null
+    },
+    {
+      "username": "flashgrnade",
+      "uuid": "6c48cb74-1aad-42dc-8b4a-3248e8574ed0",
+      "overall": "LT3",
+      "rank": 13,
+      "tiers": {
+        "sword":   "LT2",
+        "axe":     "HT3",
+        "uhc":     "HT4",
+        "mace":    "LT4",
+        "crystal": "HT5",
+        "smp":     "LT3",
+        "nsmp":    "LT3",
+        "dpot":    "LT4",
+        "npot":    "HT4",
+        "hybrid":  "LT3"
+      },
+      "special": null,
+      "_note": "old username for __bigd, same UUID"
     },
     {
       "username": "cricketrlz0000",
@@ -25,11 +49,16 @@
       "overall": "HT1",
       "rank": 1,
       "tiers": {
-        "sword": "HT1",
-        "axe":   "HT1",
-        "uhc":   "HT1",
-        "mace":  "HT1",
-        "smp":   "HT1"
+        "sword":   "LT1",
+        "axe":     "LT1",
+        "uhc":     "HT1",
+        "mace":    "HT2",
+        "crystal": "LT2",
+        "smp":     "LT1",
+        "nsmp":    "LT1",
+        "dpot":    "LT1",
+        "npot":    "LT1",
+        "hybrid":  "LT1"
       },
       "special": "KING"
     },
@@ -39,11 +68,16 @@
       "overall": "HT1",
       "rank": 2,
       "tiers": {
-        "sword": "HT1",
-        "axe":   "HT1",
-        "uhc":   "HT1",
-        "mace":  "HT1",
-        "smp":   "HT1"
+        "sword":   "LT1",
+        "axe":     "LT1",
+        "uhc":     "LT1",
+        "mace":    "HT1",
+        "crystal": "LT1",
+        "smp":     "LT1",
+        "nsmp":    "HT2",
+        "dpot":    "HT2",
+        "npot":    "HT2",
+        "hybrid":  "HT2"
       },
       "special": null
     },
@@ -53,11 +87,16 @@
       "overall": "LT1",
       "rank": 3,
       "tiers": {
-        "sword": "LT1",
-        "axe":   "LT1",
-        "uhc":   "LT1",
-        "mace":  "LT1",
-        "smp":   "LT1"
+        "sword":   "LT2",
+        "axe":     "HT1",
+        "uhc":     "LT2",
+        "mace":    "LT2",
+        "crystal": "LT1",
+        "smp":     "HT2",
+        "nsmp":    "HT3",
+        "dpot":    "HT2",
+        "npot":    "LT2",
+        "hybrid":  "LT2"
       },
       "special": null
     },
@@ -67,11 +106,16 @@
       "overall": "LT1",
       "rank": 4,
       "tiers": {
-        "sword": "LT1",
-        "axe":   "LT1",
-        "uhc":   "LT1",
-        "mace":  "LT1",
-        "smp":   "LT1"
+        "sword":   "LT1",
+        "axe":     "LT1",
+        "uhc":     "LT1",
+        "mace":    "LT2",
+        "crystal": "LT1",
+        "smp":     "UNRANKED",
+        "nsmp":    "UNRANKED",
+        "dpot":    "LT1",
+        "npot":    "LT1",
+        "hybrid":  "UNRANKED"
       },
       "special": null
     },
@@ -81,11 +125,16 @@
       "overall": "LT1",
       "rank": 5,
       "tiers": {
-        "sword": "LT1",
-        "axe":   "LT1",
-        "uhc":   "LT1",
-        "mace":  "LT1",
-        "smp":   "LT1"
+        "sword":   "HT1",
+        "axe":     "LT1",
+        "uhc":     "HT2",
+        "mace":    "LT1",
+        "crystal": "LT1",
+        "smp":     "HT1",
+        "nsmp":    "UNRANKED",
+        "dpot":    "UNRANKED",
+        "npot":    "LT1",
+        "hybrid":  "UNRANKED"
       },
       "special": null
     },
@@ -95,11 +144,16 @@
       "overall": "HT2",
       "rank": 6,
       "tiers": {
-        "sword": "HT2",
-        "axe":   "HT2",
-        "uhc":   "HT2",
-        "mace":  "HT2",
-        "smp":   "HT2"
+        "sword":   "LT1",
+        "axe":     "HT3",
+        "uhc":     "LT2",
+        "mace":    "LT3",
+        "crystal": "LT4",
+        "smp":     "LT2",
+        "nsmp":    "HT3",
+        "dpot":    "LT1",
+        "npot":    "LT2",
+        "hybrid":  "HT3"
       },
       "special": null
     },
@@ -109,11 +163,16 @@
       "overall": "HT2",
       "rank": 7,
       "tiers": {
-        "sword": "HT2",
-        "axe":   "HT2",
-        "uhc":   "HT2",
-        "mace":  "HT2",
-        "smp":   "HT2"
+        "sword":   "HT2",
+        "axe":     "HT3",
+        "uhc":     "LT2",
+        "mace":    "LT2",
+        "crystal": "HT2",
+        "smp":     "LT2",
+        "nsmp":    "HT3",
+        "dpot":    "HT3",
+        "npot":    "HT3",
+        "hybrid":  "HT3"
       },
       "special": null
     },
@@ -123,11 +182,16 @@
       "overall": "LT2",
       "rank": 8,
       "tiers": {
-        "sword": "LT2",
-        "axe":   "LT2",
-        "uhc":   "LT2",
-        "mace":  "LT2",
-        "smp":   "LT2"
+        "sword":   "LT2",
+        "axe":     "LT2",
+        "uhc":     "LT2",
+        "mace":    "LT2",
+        "crystal": "LT2",
+        "smp":     "LT2",
+        "nsmp":    "LT2",
+        "dpot":    "LT2",
+        "npot":    "LT2",
+        "hybrid":  "LT2"
       },
       "special": "RETIRED"
     },
@@ -137,11 +201,16 @@
       "overall": "LT2",
       "rank": 9,
       "tiers": {
-        "sword": "LT2",
-        "axe":   "LT2",
-        "uhc":   "LT2",
-        "mace":  "LT2",
-        "smp":   "LT2"
+        "sword":   "LT1",
+        "axe":     "LT1",
+        "uhc":     "UNRANKED",
+        "mace":    "UNRANKED",
+        "crystal": "HT1",
+        "smp":     "HT1",
+        "nsmp":    "UNRANKED",
+        "dpot":    "LT1",
+        "npot":    "UNRANKED",
+        "hybrid":  "UNRANKED"
       },
       "special": null
     },
@@ -151,11 +220,16 @@
       "overall": "HT3",
       "rank": 10,
       "tiers": {
-        "sword": "HT3",
-        "axe":   "HT3",
-        "uhc":   "HT3",
-        "mace":  "HT3",
-        "smp":   "HT3"
+        "sword":   "LT2",
+        "axe":     "HT4",
+        "uhc":     "HT3",
+        "mace":    "HT2",
+        "crystal": "HT5",
+        "smp":     "HT3",
+        "nsmp":    "HT3",
+        "dpot":    "HT5",
+        "npot":    "LT3",
+        "hybrid":  "LT2"
       },
       "special": null
     },
@@ -165,11 +239,16 @@
       "overall": "HT3",
       "rank": 11,
       "tiers": {
-        "sword": "HT3",
-        "axe":   "HT3",
-        "uhc":   "HT3",
-        "mace":  "HT3",
-        "smp":   "HT3"
+        "sword":   "HT3",
+        "axe":     "LT3",
+        "uhc":     "LT3",
+        "mace":    "UNRANKED",
+        "crystal": "LT5",
+        "smp":     "LT3",
+        "nsmp":    "HT4",
+        "dpot":    "UNRANKED",
+        "npot":    "UNRANKED",
+        "hybrid":  "UNRANKED"
       },
       "special": null
     },
@@ -179,28 +258,18 @@
       "overall": "LT3",
       "rank": 12,
       "tiers": {
-        "sword": "LT3",
-        "axe":   "LT3",
-        "uhc":   "LT3",
-        "mace":  "LT3",
-        "smp":   "LT3"
+        "sword":   "LT3",
+        "axe":     "HT4",
+        "uhc":     "LT3",
+        "mace":    "HT3",
+        "crystal": "LT2",
+        "smp":     "HT4",
+        "nsmp":    "LT5",
+        "dpot":    "HT5",
+        "npot":    "HT5",
+        "hybrid":  "HT4"
       },
       "special": null
-    },
-    {
-      "username": "flashgrnade",
-      "uuid": "P6c48cb74-1aad-42dc-8b4a-3248e8574ed0",
-      "overall": "LT3",
-      "rank": 13,
-      "tiers": {
-        "sword": "LT3",
-        "axe":   "LT3",
-        "uhc":   "LT3",
-        "mace":  "LT3",
-        "smp":   "LT3"
-      },
-      "special": null,
-      "_note": "username changed to __bigd — keep both entries pointing to same UUID so old/new name both show tier"
     },
     {
       "username": "contagiousfart",
@@ -208,11 +277,16 @@
       "overall": "LT3",
       "rank": 14,
       "tiers": {
-        "sword": "LT3",
-        "axe":   "LT3",
-        "uhc":   "LT3",
-        "mace":  "LT3",
-        "smp":   "LT3"
+        "sword":   "UNRANKED",
+        "axe":     "LT2",
+        "uhc":     "UNRANKED",
+        "mace":    "UNRANKED",
+        "crystal": "UNRANKED",
+        "smp":     "LT3",
+        "nsmp":    "UNRANKED",
+        "dpot":    "HT2",
+        "npot":    "UNRANKED",
+        "hybrid":  "UNRANKED"
       },
       "special": null
     },
@@ -222,11 +296,16 @@
       "overall": "LT3",
       "rank": 15,
       "tiers": {
-        "sword": "LT3",
-        "axe":   "LT3",
-        "uhc":   "LT3",
-        "mace":  "LT3",
-        "smp":   "LT3"
+        "sword":   "LT3",
+        "axe":     "HT3",
+        "uhc":     "UNRANKED",
+        "mace":    "LT3",
+        "crystal": "UNRANKED",
+        "smp":     "LT3",
+        "nsmp":    "LT3",
+        "dpot":    "UNRANKED",
+        "npot":    "UNRANKED",
+        "hybrid":  "HT3"
       },
       "special": null
     },
@@ -236,11 +315,16 @@
       "overall": "HT4",
       "rank": 16,
       "tiers": {
-        "sword": "HT4",
-        "axe":   "HT4",
-        "uhc":   "HT4",
-        "mace":  "HT4",
-        "smp":   "HT4"
+        "sword":   "LT2",
+        "axe":     "LT4",
+        "uhc":     "LT3",
+        "mace":    "HT5",
+        "crystal": "HT5",
+        "smp":     "HT4",
+        "nsmp":    "LT4",
+        "dpot":    "LT4",
+        "npot":    "HT4",
+        "hybrid":  "HT4"
       },
       "special": null
     },
@@ -250,11 +334,16 @@
       "overall": "HT4",
       "rank": 17,
       "tiers": {
-        "sword": "HT4",
-        "axe":   "HT4",
-        "uhc":   "HT4",
-        "mace":  "HT4",
-        "smp":   "HT4"
+        "sword":   "HT4",
+        "axe":     "LT3",
+        "uhc":     "LT3",
+        "mace":    "UNRANKED",
+        "crystal": "LT3",
+        "smp":     "HT4",
+        "nsmp":    "HT4",
+        "dpot":    "LT3",
+        "npot":    "UNRANKED",
+        "hybrid":  "HT4"
       },
       "special": null
     },
@@ -264,11 +353,16 @@
       "overall": "LT4",
       "rank": 18,
       "tiers": {
-        "sword": "LT4",
-        "axe":   "LT4",
-        "uhc":   "LT4",
-        "mace":  "LT4",
-        "smp":   "LT4"
+        "sword":   "HT4",
+        "axe":     "UNRANKED",
+        "uhc":     "UNRANKED",
+        "mace":    "HT2",
+        "crystal": "LT2",
+        "smp":     "UNRANKED",
+        "nsmp":    "UNRANKED",
+        "dpot":    "UNRANKED",
+        "npot":    "UNRANKED",
+        "hybrid":  "UNRANKED"
       },
       "special": null
     },
@@ -278,11 +372,16 @@
       "overall": "LT4",
       "rank": 19,
       "tiers": {
-        "sword": "LT4",
-        "axe":   "LT4",
-        "uhc":   "LT4",
-        "mace":  "LT4",
-        "smp":   "LT4"
+        "sword":   "LT4",
+        "axe":     "HT4",
+        "uhc":     "LT4",
+        "mace":    "HT5",
+        "crystal": "HT5",
+        "smp":     "HT4",
+        "nsmp":    "UNRANKED",
+        "dpot":    "UNRANKED",
+        "npot":    "UNRANKED",
+        "hybrid":  "UNRANKED"
       },
       "special": null
     },
@@ -292,11 +391,16 @@
       "overall": "LT5",
       "rank": 20,
       "tiers": {
-        "sword": "LT5",
-        "axe":   "LT5",
-        "uhc":   "LT5",
-        "mace":  "LT5",
-        "smp":   "LT5"
+        "sword":   "HT4",
+        "axe":     "UNRANKED",
+        "uhc":     "UNRANKED",
+        "mace":    "UNRANKED",
+        "crystal": "LT2",
+        "smp":     "UNRANKED",
+        "nsmp":    "UNRANKED",
+        "dpot":    "UNRANKED",
+        "npot":    "UNRANKED",
+        "hybrid":  "UNRANKED"
       },
       "special": null
     },
@@ -306,11 +410,16 @@
       "overall": "LT5",
       "rank": 21,
       "tiers": {
-        "sword": "LT5",
-        "axe":   "LT5",
-        "uhc":   "LT5",
-        "mace":  "LT5",
-        "smp":   "LT5"
+        "sword":   "UNRANKED",
+        "axe":     "LT4",
+        "uhc":     "LT4",
+        "mace":    "LT5",
+        "crystal": "UNRANKED",
+        "smp":     "HT5",
+        "nsmp":    "HT5",
+        "dpot":    "UNRANKED",
+        "npot":    "UNRANKED",
+        "hybrid":  "UNRANKED"
       },
       "special": "RETIRED"
     },
@@ -320,11 +429,16 @@
       "overall": "LT5",
       "rank": 22,
       "tiers": {
-        "sword": "LT5",
-        "axe":   "LT5",
-        "uhc":   "LT5",
-        "mace":  "LT5",
-        "smp":   "LT5"
+        "sword":   "UNRANKED",
+        "axe":     "HT4",
+        "uhc":     "LT5",
+        "mace":    "HT5",
+        "crystal": "UNRANKED",
+        "smp":     "UNRANKED",
+        "nsmp":    "UNRANKED",
+        "dpot":    "UNRANKED",
+        "npot":    "UNRANKED",
+        "hybrid":  "UNRANKED"
       },
       "special": null
     },
@@ -334,25 +448,35 @@
       "overall": "LT5",
       "rank": 23,
       "tiers": {
-        "sword": "LT5",
-        "axe":   "LT5",
-        "uhc":   "LT5",
-        "mace":  "LT5",
-        "smp":   "LT5"
+        "sword":   "UNRANKED",
+        "axe":     "LT2",
+        "uhc":     "UNRANKED",
+        "mace":    "UNRANKED",
+        "crystal": "UNRANKED",
+        "smp":     "UNRANKED",
+        "nsmp":    "UNRANKED",
+        "dpot":    "UNRANKED",
+        "npot":    "UNRANKED",
+        "hybrid":  "UNRANKED"
       },
       "special": null
     },
     {
       "username": "BigA_1",
-      "uuid": "Pab5484eb-8f8e-4048-9619-9bff2cbb5d06",
+      "uuid": "ab5484eb-8f8e-4048-9619-9bff2cbb5d06",
       "overall": "LT5",
       "rank": 24,
       "tiers": {
-        "sword": "LT5",
-        "axe":   "LT5",
-        "uhc":   "LT5",
-        "mace":  "LT5",
-        "smp":   "LT5"
+        "sword":   "HT4",
+        "axe":     "LT3",
+        "uhc":     "UNRANKED",
+        "mace":    "UNRANKED",
+        "crystal": "UNRANKED",
+        "smp":     "UNRANKED",
+        "nsmp":    "UNRANKED",
+        "dpot":    "UNRANKED",
+        "npot":    "UNRANKED",
+        "hybrid":  "UNRANKED"
       },
       "special": null
     },
@@ -362,11 +486,16 @@
       "overall": "LT5",
       "rank": 25,
       "tiers": {
-        "sword": "LT5",
-        "axe":   "LT5",
-        "uhc":   "LT5",
-        "mace":  "LT5",
-        "smp":   "LT5"
+        "sword":   "UNRANKED",
+        "axe":     "LT5",
+        "uhc":     "UNRANKED",
+        "mace":    "UNRANKED",
+        "crystal": "UNRANKED",
+        "smp":     "HT5",
+        "nsmp":    "UNRANKED",
+        "dpot":    "UNRANKED",
+        "npot":    "UNRANKED",
+        "hybrid":  "UNRANKED"
       },
       "special": "RETIRED"
     },
@@ -376,11 +505,16 @@
       "overall": "LT5",
       "rank": 26,
       "tiers": {
-        "sword": "LT5",
-        "axe":   "LT5",
-        "uhc":   "LT5",
-        "mace":  "LT5",
-        "smp":   "LT5"
+        "sword":   "UNRANKED",
+        "axe":     "LT5",
+        "uhc":     "UNRANKED",
+        "mace":    "UNRANKED",
+        "crystal": "UNRANKED",
+        "smp":     "UNRANKED",
+        "nsmp":    "UNRANKED",
+        "dpot":    "UNRANKED",
+        "npot":    "UNRANKED",
+        "hybrid":  "UNRANKED"
       },
       "special": "RETIRED"
     }

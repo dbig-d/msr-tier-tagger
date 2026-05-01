@@ -20,6 +20,9 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class TierRegistry {
 
+    public static final org.slf4j.Logger LOGGER =
+            org.slf4j.LoggerFactory.getLogger("msr-tiertagger-registry");
+
     // username (lowercase) -> PlayerTier
     private static final Map<String, PlayerTier> BY_NAME = new ConcurrentHashMap<>();
     // uuid (lowercase, dashed) -> PlayerTier
@@ -101,30 +104,61 @@ public class TierRegistry {
      * Builds the coloured badge Text shown in chat and above heads.
      * Examples:  §6[HT1👑]  §7[LT2]  §c[HT3]
      */
-    public static MutableText buildBadge(PlayerTier player) {
-        String tier   = player.overallTier();
-        boolean bold  = tier != null && tier.startsWith("H");
-        String suffix = "";
+    /**
+     * Builds the tier badge. If gamemode is non-null and the player has a
+     * ranking for that mode, shows the gamemode tier instead of overall.
+     */
+    public static MutableText buildBadge(PlayerTier player, String gamemode) {
+        // Pick gamemode-specific tier if available, otherwise fall back to overall
+        String tier = player.overallTier();
+        if (gamemode != null) {
+            String gmTier = player.gamemodes().get(gamemode);
+            if (gmTier != null && !"UNRANKED".equals(gmTier)) {
+                tier = gmTier;
+            }
+        }
+        boolean bold = tier != null && tier.startsWith("H");
 
-        if ("KING".equals(player.special()))         suffix = " 👑";
+        String suffix = "";
+        if ("KING".equals(player.special()))         suffix = " ❤";
         else if ("RETIRED".equals(player.special())) suffix = " †";
         else if ("DEV".equals(player.special()))     suffix = " ⚙";
 
-        // Format:  HT1 |   or   LT3 |
-        // Tier name is coloured + bold (if HT), separator is white dim
-        String tierLabel = (tier != null ? tier : "?") + suffix;
-
-        MutableText tierText = Text.literal(tierLabel)
+        MutableText tierPart = Text.literal((tier != null ? tier : "?") + suffix)
                 .setStyle(Style.EMPTY
                         .withColor(tierColour(tier))
                         .withBold(bold));
 
-        MutableText separator = Text.literal(" | ")
+        MutableText sep = Text.literal(" | ")
                 .setStyle(Style.EMPTY
                         .withColor(Formatting.GRAY)
                         .withBold(false));
 
-        return tierText.append(separator);
+        return tierPart.append(sep);
+    }
+
+    /** Overload — shows overall tier when no gamemode is active. */
+    public static MutableText buildBadge(PlayerTier player) {
+        return buildBadge(player, null);
+    }
+
+    /** Overload with no gamemode — shows overall tier. */
+
+
+    public static int getPlayerCount() {
+        return BY_NAME.size();
+    }
+
+    /** Logs every loaded player and their overall tier — called on server join. */
+    public static void logAllTiers() {
+        if (BY_NAME.isEmpty()) {
+            LOGGER.info("[MSR DEBUG] No tier data loaded yet — JSON may still be fetching.");
+            return;
+        }
+        BY_NAME.forEach((name, tier) ->
+                LOGGER.info("[MSR DEBUG] {} -> overall:{} gamemode tiers:{}",
+                        name, tier.overallTier(), tier.gamemodes())
+        );
     }
 
     // ── PlayerTier record ─────────────────────────────────────────────────────

@@ -1,6 +1,7 @@
 package net.dc.msrtiertagger.mixin;
 
 import net.dc.msrtiertagger.data.TierRegistry;
+import net.minecraft.client.MinecraftClient;
 import net.dc.msrtiertagger.data.TierRegistry.PlayerTier;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
@@ -38,7 +39,15 @@ public abstract class PlayerEntityRendererMixin {
             Optional<PlayerTier> opt = TierRegistry.getByUsername(username);
 
             if (opt.isPresent()) {
-                MutableText badge = TierRegistry.buildBadge(opt.get());
+                // Use gamemode-specific tier for the local player,
+                // overall tier for everyone else
+                MinecraftClient mc = MinecraftClient.getInstance();
+                boolean isLocalPlayer = mc != null && mc.player != null
+                        && mc.player.getName().getString().equals(username);
+                String gamemode = isLocalPlayer
+                        ? net.dc.msrtiertagger.data.GamemodeDetector.getCurrentGamemode()
+                        : null;
+                MutableText badge = TierRegistry.buildBadge(opt.get(), gamemode);
                 // Use Text.literal(username) with explicit white — this fully breaks
                 // style inheritance so the name never picks up the tier colour
                 MutableText whiteName = Text.literal(username)
