@@ -1,11 +1,12 @@
 package net.dc.msrtiertagger.data;
 
 import com.google.gson.*;
-import net.dc.msrtiertagger.MSRTierTagger;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -14,35 +15,28 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * Fetches MSR tier data from the GitHub JSON file and stores it in memory.
- * Lookups work by both username (lowercase) and UUID.
- */
 public class TierRegistry {
 
-    public static final org.slf4j.Logger LOGGER =
-            org.slf4j.LoggerFactory.getLogger("msr-tiertagger-registry");
+    public static final Logger LOGGER =
+            LoggerFactory.getLogger("msr-tiertagger-registry");
 
-    // username (lowercase) -> PlayerTier
     private static final Map<String, PlayerTier> BY_NAME = new ConcurrentHashMap<>();
-    // uuid (lowercase, dashed) -> PlayerTier
     private static final Map<String, PlayerTier> BY_UUID = new ConcurrentHashMap<>();
-
     private static volatile boolean loaded = false;
 
-    // ── Fetch ────────────────────────────────────────────────────────────────
+    // ── Fetch ─────────────────────────────────────────────────────────────────
 
     public static void fetchAsync(String url) {
         CompletableFuture.runAsync(() -> {
             try {
-                MSRTierTagger.LOGGER.info("[MSR] Fetching tier data from GitHub...");
+                LOGGER.info("[MSR] Fetching tier data from GitHub...");
                 HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
                 conn.setConnectTimeout(8000);
                 conn.setReadTimeout(8000);
                 conn.setRequestProperty("User-Agent", "MSR-TierTagger/1.0");
 
                 if (conn.getResponseCode() != 200) {
-                    MSRTierTagger.LOGGER.warn("[MSR] HTTP {} when fetching tier data", conn.getResponseCode());
+                    LOGGER.warn("[MSR] HTTP {} when fetching tier data", conn.getResponseCode());
                     return;
                 }
 
@@ -63,17 +57,16 @@ public class TierRegistry {
                     }
                     count++;
                 }
-
                 loaded = true;
-                MSRTierTagger.LOGGER.info("[MSR] Loaded {} player tier entries.", count);
+                LOGGER.info("[MSR] Loaded {} player tier entries.", count);
 
             } catch (Exception e) {
-                MSRTierTagger.LOGGER.warn("[MSR] Could not fetch tier data: {}", e.getMessage());
+                LOGGER.warn("[MSR] Could not fetch tier data: {}", e.getMessage());
             }
         });
     }
 
-    // ── Lookups ──────────────────────────────────────────────────────────────
+    // ── Lookups ───────────────────────────────────────────────────────────────
 
     public static Optional<PlayerTier> getByUsername(String username) {
         if (username == null) return Optional.empty();
@@ -87,29 +80,47 @@ public class TierRegistry {
 
     public static boolean isLoaded() { return loaded; }
 
-    // ── Tier display helpers ──────────────────────────────────────────────────
+    public static int getPlayerCount() { return BY_NAME.size(); }
 
-    /** Returns the Minecraft formatting colour for a given tier string. */
-    public static Formatting tierColour(String tier) {
-        if (tier == null) return Formatting.WHITE;
+    public static void logAllTiers() {
+        if (BY_NAME.isEmpty()) {
+            LOGGER.info("[MSR DEBUG] No tier data loaded yet — JSON may still be fetching.");
+            return;
+        }
+        BY_NAME.forEach((name, tier) ->
+                LOGGER.info("[MSR DEBUG] {} -> overall:{} gamemode tiers:{}",
+                        name, tier.overallTier(), tier.gamemodes())
+        );
+    }
+
+    // ── Tier colours (RGB hex) ────────────────────────────────────────────────
+    // Tier 1: Gold    (#FFD700)
+    // Tier 2: Silver  (#C0C0C0)
+    // Tier 3: Bronze  (#CD7F32)
+    // Tier 4: Dark blue-gray (#5B6EAE)
+    // Tier 5: Slate gray     (#778899)
+
+    public static int tierColourRgb(String tier) {
+        if (tier == null) return 0x778899;
         return switch (tier) {
-            case "LT1", "HT1" -> Formatting.GOLD;
-            case "LT2", "HT2" -> Formatting.GRAY;
-            case "LT3", "HT3" -> Formatting.RED;
-            default            -> Formatting.WHITE;
+            case "LT1", "HT1" -> 0xFFD700; // Gold
+            case "LT2", "HT2" -> 0xC0C0C0; // Silver
+            case "LT3", "HT3" -> 0xCD7F32; // Bronze
+            case "LT4", "HT4" -> 0x5B6EAE; // Dark blue-gray
+            default            -> 0x778899; // Slate gray (LT5/HT5)
         };
     }
 
+    // ── Badge builder ─────────────────────────────────────────────────────────
+
     /**
-     * Builds the coloured badge Text shown in chat and above heads.
-     * Examples:  §6[HT1👑]  §7[LT2]  §c[HT3]
-     */
-    /**
-     * Builds the tier badge. If gamemode is non-null and the player has a
-     * ranking for that mode, shows the gamemode tier instead of overall.
+     * Builds the coloured tier badge text.
+     * If gamemode is non-null and the player has a ranking for that mode,
+     * shows the gamemode-specific tier instead of overall.
+     * Result:  HT1 |   (caller appends the player name after)
      */
     public static MutableText buildBadge(PlayerTier player, String gamemode) {
-        // Pick gamemode-specific tier if available, otherwise fall back to overall
+        // Pick gamemode-specific tier if available, fall back to overall
         String tier = player.overallTier();
         if (gamemode != null) {
             String gmTier = player.gamemodes().get(gamemode);
@@ -117,18 +128,21 @@ public class TierRegistry {
                 tier = gmTier;
             }
         }
+
         boolean bold = tier != null && tier.startsWith("H");
 
         String suffix = "";
-        if ("KING".equals(player.special()))         suffix = " ❤";
-        else if ("RETIRED".equals(player.special())) suffix = " †";
-        else if ("DEV".equals(player.special()))     suffix = " ⚙";
+        if ("KING".equals(player.special()))         suffix = " \u2764";
+        else if ("RETIRED".equals(player.special())) suffix = " \u2020";
+        else if ("DEV".equals(player.special()))     suffix = " \u2699";
 
+        // Tier label with exact RGB colour
         MutableText tierPart = Text.literal((tier != null ? tier : "?") + suffix)
                 .setStyle(Style.EMPTY
-                        .withColor(tierColour(tier))
+                        .withColor(tierColourRgb(tier))
                         .withBold(bold));
 
+        // Separator in gray
         MutableText sep = Text.literal(" | ")
                 .setStyle(Style.EMPTY
                         .withColor(Formatting.GRAY)
@@ -140,25 +154,6 @@ public class TierRegistry {
     /** Overload — shows overall tier when no gamemode is active. */
     public static MutableText buildBadge(PlayerTier player) {
         return buildBadge(player, null);
-    }
-
-    /** Overload with no gamemode — shows overall tier. */
-
-
-    public static int getPlayerCount() {
-        return BY_NAME.size();
-    }
-
-    /** Logs every loaded player and their overall tier — called on server join. */
-    public static void logAllTiers() {
-        if (BY_NAME.isEmpty()) {
-            LOGGER.info("[MSR DEBUG] No tier data loaded yet — JSON may still be fetching.");
-            return;
-        }
-        BY_NAME.forEach((name, tier) ->
-                LOGGER.info("[MSR DEBUG] {} -> overall:{} gamemode tiers:{}",
-                        name, tier.overallTier(), tier.gamemodes())
-        );
     }
 
     // ── PlayerTier record ─────────────────────────────────────────────────────
@@ -184,7 +179,6 @@ public class TierRegistry {
                 obj.getAsJsonObject("tiers").entrySet()
                         .forEach(e -> tiers.put(e.getKey(), e.getValue().getAsString()));
             }
-
             return new PlayerTier(username, uuid, overall, rank, tiers, special);
         }
     }

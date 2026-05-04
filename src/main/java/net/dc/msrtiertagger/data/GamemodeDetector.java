@@ -7,113 +7,61 @@ import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.screen.PlayerScreenHandler;
 
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Detects which MSR gamemode the local player is currently playing
- * by inspecting their inventory contents.
- *
- * Flow:
- *   1. isInLobby() checks for the 5 known lobby hotbar items.
- *   2. When the lobby inventory changes, MSRTierTaggerClient schedules
- *      a 3-second delayed call to detect().
- *   3. detect() returns a gamemode key string matching the keys in msr_tiers.json:
- *      "sword", "axe", "uhc", "mace", "crystal",
- *      "smp", "nsmp", "dpot", "npot", "hybrid"
- *      or null if unknown / still in lobby.
- */
 public class GamemodeDetector {
 
-    // The currently detected gamemode — null means lobby or unknown
     private static volatile String currentGamemode = null;
 
-    public static String getCurrentGamemode() {
-        return currentGamemode;
-    }
+    public static String getCurrentGamemode() { return currentGamemode; }
 
     public static void setGamemode(String gamemode) {
         currentGamemode = gamemode;
-        TierRegistry.LOGGER.info("[MSR] Gamemode detected: {}", gamemode != null ? gamemode : "lobby");
+        TierRegistry.LOGGER.info("[MSR] Gamemode set to: {}",
+                gamemode != null ? gamemode : "null (lobby/unknown)");
     }
 
     // ── Lobby detection ───────────────────────────────────────────────────────
+    // Lobby hotbar (0-indexed):
+    //   Slot 0: Iron Sword
+    //   Slot 1: Nether Star
+    //   Slot 6: Book
+    //   Slot 7: Grindstone
+    //   Slot 8: Player Head
+    // Requires 3/5 to match (resilient to minor kit changes)
 
-    /**
-     * Returns true if the player's hotbar matches the known lobby kit.
-     * Slot numbers (0-indexed from PlayerInventory):
-     *   Slot 0: Iron Sword    (hotbar slot 1)
-     *   Slot 1: Nether Star   (hotbar slot 2)
-     *   Slot 6: Book          (hotbar slot 7)
-     *   Slot 7: Grindstone    (hotbar slot 8)
-     *   Slot 8: Player Head   (hotbar slot 9)
-     *
-     * We check at least 3 of 5 to be resilient to minor kit differences.
-     */
     public static boolean isInLobby(ClientPlayerEntity player) {
         try {
             var inv = player.getInventory();
             int matches = 0;
-            if (inv.getStack(0).isOf(Items.IRON_SWORD))   matches++;
-            if (inv.getStack(1).isOf(Items.NETHER_STAR))  matches++;
-            if (inv.getStack(6).isOf(Items.BOOK))         matches++;
-            if (inv.getStack(7).isOf(Items.GRINDSTONE))   matches++;
-            if (inv.getStack(8).isOf(Items.PLAYER_HEAD))  matches++;
+            if (inv.getStack(0).isOf(Items.IRON_SWORD))  matches++;
+            if (inv.getStack(1).isOf(Items.NETHER_STAR)) matches++;
+            if (inv.getStack(6).isOf(Items.BOOK))        matches++;
+            if (inv.getStack(7).isOf(Items.GRINDSTONE))  matches++;
+            if (inv.getStack(8).isOf(Items.PLAYER_HEAD)) matches++;
             return matches >= 3;
         } catch (Exception e) {
             return false;
         }
     }
 
-    /**
-     * Dumps the full hotbar (slots 0-8) and armour slots to the log.
-     * Called right before gamemode detection so you can see what items
-     * are present and debug detection failures.
-     */
-    public static void dumpInventory(ClientPlayerEntity player) {
+    public static boolean hasAnyItems(ClientPlayerEntity player) {
         try {
             var inv = player.getInventory();
-            TierRegistry.LOGGER.info("[MSR DEBUG] === Inventory dump (3s after lobby change) ===");
-            TierRegistry.LOGGER.info("[MSR DEBUG] Hotbar:");
-            for (int i = 0; i < 9; i++) {
-                var stack = inv.getStack(i);
-                if (!stack.isEmpty()) {
-                    TierRegistry.LOGGER.info("[MSR DEBUG]   Slot {}: {} x{}",
-                            i, stack.getItem().toString(), stack.getCount());
-                }
+            for (int i = 0; i < inv.size(); i++) {
+                if (!inv.getStack(i).isEmpty()) return true;
             }
-            TierRegistry.LOGGER.info("[MSR DEBUG] Main inventory (9-35):");
-            for (int i = 9; i < 36; i++) {
-                var stack = inv.getStack(i);
-                if (!stack.isEmpty()) {
-                    TierRegistry.LOGGER.info("[MSR DEBUG]   Slot {}: {} x{}",
-                            i, stack.getItem().toString(), stack.getCount());
-                }
-            }
-            TierRegistry.LOGGER.info("[MSR DEBUG] Armour slots (36-39):");
-            for (int i = 36; i < 40; i++) {
-                var stack = inv.getStack(i);
-                if (!stack.isEmpty()) {
-                    TierRegistry.LOGGER.info("[MSR DEBUG]   Slot {}: {}",
-                            i, stack.getItem().toString());
-                }
-            }
-            TierRegistry.LOGGER.info("[MSR DEBUG] === End inventory dump ===");
+            return false;
         } catch (Exception e) {
-            TierRegistry.LOGGER.warn("[MSR DEBUG] Could not dump inventory: {}", e.getMessage());
+            return false;
         }
     }
 
     // ── Gamemode detection ────────────────────────────────────────────────────
+    // Checks ordered from most-unique identifier to least-unique.
 
-    /**
-     * Inspects the player's full inventory and returns the detected gamemode key,
-     * or null if the inventory doesn't match any known kit.
-     *
-     * Checks are ordered from most-unique identifier to least-unique.
-     */
     public static String detect(ClientPlayerEntity player) {
         try {
             Map<Item, Integer> counts = countItems(player);
@@ -128,26 +76,25 @@ public class GamemodeDetector {
                 return "mace";
             }
 
-            // 3. UHC — has 8+ Honey Bottles (retextured as Golden Heads)
-            if (counts.getOrDefault(Items.HONEY_BOTTLE, 0) >= 8) {
+            // 3. UHC — ONLY gamemode that starts with exactly 10 arrows
+            if (counts.getOrDefault(Items.ARROW, 0) == 10) {
                 return "uhc";
             }
 
-            // 4. Axe — has Bow + Crossbow + exactly 6 arrows
+            // 4. Axe — has Bow + Crossbow (arrows != 10 already excluded UHC above)
             if (counts.getOrDefault(Items.BOW, 0) > 0
-                    && counts.getOrDefault(Items.CROSSBOW, 0) > 0
-                    && counts.getOrDefault(Items.ARROW, 0) == 6) {
+                    && counts.getOrDefault(Items.CROSSBOW, 0) > 0) {
                 return "axe";
             }
 
-            // 5. Sword — has Diamond Sword, no Diamond Axe, no Bow
+            // 5. Sword — Diamond Sword, no Diamond Axe, no Bow
             if (counts.getOrDefault(Items.DIAMOND_SWORD, 0) > 0
                     && counts.getOrDefault(Items.DIAMOND_AXE, 0) == 0
                     && counts.getOrDefault(Items.BOW, 0) == 0) {
                 return "sword";
             }
 
-            // 6. Netherite Pot — Netherite armour + Instant Health II splash potion, no axe
+            // 6. Netherite Pot — Netherite armour + Instant Health II, no axe
             if (hasNetheriteArmour(player)
                     && hasInstantHealthII(player)
                     && counts.getOrDefault(Items.DIAMOND_AXE, 0) == 0
@@ -155,7 +102,7 @@ public class GamemodeDetector {
                 return "npot";
             }
 
-            // 7. Diamond Pot — exactly 5 steaks (Cooked Beef)
+            // 7. Diamond Pot — exactly 5 steaks
             if (counts.getOrDefault(Items.COOKED_BEEF, 0) == 5) {
                 return "dpot";
             }
@@ -180,60 +127,78 @@ public class GamemodeDetector {
                 return "nsmp";
             }
 
-            return null; // unrecognised kit
+            return null;
 
         } catch (Exception e) {
             return null;
         }
     }
 
+    // ── Inventory dump (debug) ────────────────────────────────────────────────
+
+    public static void dumpInventory(ClientPlayerEntity player) {
+        try {
+            var inv = player.getInventory();
+            TierRegistry.LOGGER.info("[MSR DEBUG] === Inventory dump ===");
+            TierRegistry.LOGGER.info("[MSR DEBUG] Hotbar (slots 0-8):");
+            for (int i = 0; i < 9; i++) {
+                var stack = inv.getStack(i);
+                if (!stack.isEmpty())
+                    TierRegistry.LOGGER.info("[MSR DEBUG]   [{}] {} x{}",
+                            i, stack.getItem(), stack.getCount());
+            }
+            TierRegistry.LOGGER.info("[MSR DEBUG] Main inventory (slots 9-35):");
+            for (int i = 9; i < 36; i++) {
+                var stack = inv.getStack(i);
+                if (!stack.isEmpty())
+                    TierRegistry.LOGGER.info("[MSR DEBUG]   [{}] {} x{}",
+                            i, stack.getItem(), stack.getCount());
+            }
+            TierRegistry.LOGGER.info("[MSR DEBUG] Armour (slots 36-39):");
+            for (int i = 36; i < 40; i++) {
+                var stack = inv.getStack(i);
+                if (!stack.isEmpty())
+                    TierRegistry.LOGGER.info("[MSR DEBUG]   [{}] {}", i, stack.getItem());
+            }
+            TierRegistry.LOGGER.info("[MSR DEBUG] === End dump ===");
+        } catch (Exception e) {
+            TierRegistry.LOGGER.warn("[MSR DEBUG] Dump failed: {}", e.getMessage());
+        }
+    }
+
     // ── Helpers ───────────────────────────────────────────────────────────────
 
-    /** Build a map of Item -> total count across the full inventory. */
     private static Map<Item, Integer> countItems(ClientPlayerEntity player) {
         Map<Item, Integer> counts = new HashMap<>();
         var inv = player.getInventory();
-        // main inventory (0-35) + armour (36-39) + offhand (40)
         for (int i = 0; i < inv.size(); i++) {
             ItemStack stack = inv.getStack(i);
-            if (!stack.isEmpty()) {
+            if (!stack.isEmpty())
                 counts.merge(stack.getItem(), stack.getCount(), Integer::sum);
-            }
         }
         return counts;
     }
 
-    /** Returns true if the player has a Netherite chestplate equipped. */
     private static boolean hasNetheriteArmour(ClientPlayerEntity player) {
-        var inv = player.getInventory();
-        // Armour slots in PlayerInventory: 36=boots, 37=leggings, 38=chest, 39=helmet
-        return inv.getStack(38).isOf(Items.NETHERITE_CHESTPLATE);
+        // Slot 38 = chestplate in PlayerInventory
+        return player.getInventory().getStack(38).isOf(Items.NETHERITE_CHESTPLATE);
     }
 
-    /** Returns true if the player has a Diamond chestplate equipped. */
     private static boolean hasDiamondArmour(ClientPlayerEntity player) {
-        var inv = player.getInventory();
-        return inv.getStack(38).isOf(Items.DIAMOND_CHESTPLATE);
+        return player.getInventory().getStack(38).isOf(Items.DIAMOND_CHESTPLATE);
     }
 
-    /**
-     * Returns true if any splash potion in the inventory has Instant Health II.
-     * Checks both SPLASH_POTION and LINGERING_POTION item types.
-     */
     private static boolean hasInstantHealthII(ClientPlayerEntity player) {
         var inv = player.getInventory();
         for (int i = 0; i < inv.size(); i++) {
             ItemStack stack = inv.getStack(i);
             if (stack.isEmpty()) continue;
             if (!stack.isOf(Items.SPLASH_POTION) && !stack.isOf(Items.POTION)) continue;
-
-            PotionContentsComponent contents =
-                    stack.get(DataComponentTypes.POTION_CONTENTS);
+            PotionContentsComponent contents = stack.get(DataComponentTypes.POTION_CONTENTS);
             if (contents == null) continue;
-
             for (var effect : contents.getEffects()) {
                 if (effect.getEffectType().value().equals(StatusEffects.INSTANT_HEALTH.value())
-                        && effect.getAmplifier() >= 1) { // amplifier 1 = level II
+                        && effect.getAmplifier() >= 1) {
                     return true;
                 }
             }

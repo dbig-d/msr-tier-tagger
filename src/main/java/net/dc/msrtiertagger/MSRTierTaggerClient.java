@@ -8,35 +8,39 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.item.ItemStack;
-
-import java.util.ArrayList;
-import java.util.List;
+import net.minecraft.item.Items;
 
 /**
  * Client-side entrypoint for MSR Tier Tagger.
  *
- * In addition to tier fetching and networking, this class runs an
- * inventory watcher every tick that detects when the player leaves
- * the lobby (inventory changes from the known lobby kit) and schedules
- * a gamemode detection 3 seconds later once the kit has fully loaded.
+ * Inventory state machine:
+ *
+ *   LOBBY     -> inventory matches lobby kit (iron sword, nether star, etc.)
+ *   CLEARING  -> inventory went empty / non-lobby (server clearing for kit load)
+ *   WAITING   -> countdown ticks until we detect the loaded kit
+ *   IN_MATCH  -> gamemode has been identified
+ *
+ * Transitions:
+ *   LOBBY -> CLEARING  when lobby items disappear
+ *   CLEARING -> WAITING  when inventory becomes non-empty again (kit loading)
+ *   WAITING -> IN_MATCH  when countdown reaches 0 and detect() runs
+ *   any -> LOBBY  when lobby items reappear
  */
 public class MSRTierTaggerClient implements ClientModInitializer {
 
     public static final String TIER_JSON_URL =
             "https://raw.githubusercontent.com/dbig-d/msr-tier-tagger/master/msr_tiers.json";
 
-    // Inventory watcher state
-    private static List<ItemStack> lastInventorySnapshot = new ArrayList<>();
-    private static boolean wasInLobby = false;
-    private static int detectCountdown = -1; // ticks remaining until gamemode detect runs
+    private enum State { LOBBY, CLEARING, WAITING, IN_MATCH }
+
+    private static State state       = State.LOBBY;
+    private static int   countdown   = -1;
+    private static int   tickCounter = 0; // for periodic debug logging
 
     @Override
     public void onInitializeClient() {
         MSRTierTagger.LOGGER.info("[MSR Tier Tagger] Client initialising...");
 
-        // Register payload types before anything else
         PayloadTypeRegistry.playC2S().register(
                 MsrNetwork.MsrHelloPayload.ID,
                 MsrNetwork.MsrHelloPayload.CODEC
@@ -46,104 +50,102 @@ public class MSRTierTaggerClient implements ClientModInitializer {
                 MsrNetwork.MsrHelloPayload.CODEC
         );
 
-        // Register network receiver
         MsrNetwork.register();
 
-        // Fetch tier data from GitHub on startup
         ClientLifecycleEvents.CLIENT_STARTED.register(client ->
                 TierRegistry.fetchAsync(TIER_JSON_URL)
         );
 
-        // Send handshake on server join + print debug tier list
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
             if (client.player != null) {
                 client.execute(() -> {
                     MsrNetwork.sendHandshake(client.player.getUuidAsString());
-                    // Debug: print all loaded tiers on server join
                     MSRTierTagger.LOGGER.info("[MSR DEBUG] === Tier data loaded: {} players ===",
                             TierRegistry.getPlayerCount());
                     TierRegistry.logAllTiers();
                 });
             }
-            // Reset gamemode on each new server connection
+            state     = State.LOBBY;
+            countdown = -1;
             GamemodeDetector.setGamemode(null);
-            wasInLobby = false;
-            lastInventorySnapshot.clear();
-            detectCountdown = -1;
         });
 
-        // Clean up on disconnect
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
             MsrNetwork.clearPeers();
             GamemodeDetector.setGamemode(null);
+            state = State.LOBBY;
         });
 
-        // ── Inventory watcher tick ────────────────────────────────────────────
+        // ── Inventory state machine tick ──────────────────────────────────────
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (client.player == null) return;
+            tickCounter++;
 
-            // Countdown to gamemode detection after lobby inventory change
-            if (detectCountdown > 0) {
-                detectCountdown--;
-                if (detectCountdown == 0) {
-                    GamemodeDetector.dumpInventory(client.player);
-                    String detected = GamemodeDetector.detect(client.player);
-                    GamemodeDetector.setGamemode(detected);
-                    detectCountdown = -1;
-                }
+            boolean inLobby    = GamemodeDetector.isInLobby(client.player);
+            boolean hasItems   = GamemodeDetector.hasAnyItems(client.player);
+
+            // Always transition to LOBBY if lobby kit detected
+            if (inLobby && state != State.LOBBY) {
+                MSRTierTagger.LOGGER.info("[MSR DEBUG] Lobby detected — returned to lobby.");
+                state = State.LOBBY;
+                countdown = -1;
+                GamemodeDetector.setGamemode(null);
                 return;
             }
 
-            boolean inLobby = GamemodeDetector.isInLobby(client.player);
-
-            // Take a snapshot of the current inventory for change detection
-            List<ItemStack> currentSnapshot = snapshotInventory(client.player);
-
-            if (inLobby) {
-                // Player is in lobby — record this state and take snapshot
-                if (!wasInLobby) {
-                    MSRTierTagger.LOGGER.info("[MSR DEBUG] Lobby detected — inventory matches lobby kit.");
+            switch (state) {
+                case LOBBY -> {
+                    if (!inLobby) {
+                        // Left lobby — inventory is clearing or kit loading
+                        MSRTierTagger.LOGGER.info(
+                                "[MSR DEBUG] Left lobby (inLobby=false, hasItems={}). -> CLEARING",
+                                hasItems);
+                        state = State.CLEARING;
+                    }
                 }
-                wasInLobby = true;
-                lastInventorySnapshot = currentSnapshot;
-                // Clear gamemode while in lobby
-                if (GamemodeDetector.getCurrentGamemode() != null) {
-                    GamemodeDetector.setGamemode(null);
+
+                case CLEARING -> {
+                    if (inLobby) {
+                        // Went back to lobby (false alarm)
+                        state = State.LOBBY;
+                    } else if (hasItems) {
+                        // Items appeared — kit is loading, start countdown
+                        MSRTierTagger.LOGGER.info(
+                                "[MSR DEBUG] Items appeared after clear. Starting 3s detection countdown.");
+                        state     = State.WAITING;
+                        countdown = 20; // 1 second at 20 ticks/sec
+                    }
+                    // if still empty, stay in CLEARING
                 }
-            } else if (wasInLobby) {
-                // Was in lobby, inventory just changed — not in lobby anymore
-                // Check if inventory actually changed (not just a transient tick)
-                if (!inventoriesMatch(currentSnapshot, lastInventorySnapshot)) {
-                    MSRTierTagger.LOGGER.info("[MSR] Left lobby — scheduling gamemode detection in 3s.");
-                    wasInLobby = false;
-                    // 3 seconds at 20 ticks/second = 60 ticks
-                    detectCountdown = 60;
+
+                case WAITING -> {
+                    if (inLobby) {
+                        state = State.LOBBY;
+                        countdown = -1;
+                        return;
+                    }
+                    countdown--;
+                    // Log every 20 ticks (1 sec) so we can see the countdown
+                    if (countdown % 20 == 0) {
+                        MSRTierTagger.LOGGER.info(
+                                "[MSR DEBUG] Detection countdown: {}t remaining", countdown);
+                    }
+                    if (countdown <= 0) {
+                        MSRTierTagger.LOGGER.info("[MSR DEBUG] Running gamemode detection...");
+                        GamemodeDetector.dumpInventory(client.player);
+                        String detected = GamemodeDetector.detect(client.player);
+                        GamemodeDetector.setGamemode(detected);
+                        state     = State.IN_MATCH;
+                        countdown = -1;
+                    }
+                }
+
+                case IN_MATCH -> {
+                    // Nothing to do — waiting for return to lobby
                 }
             }
         });
 
         MSRTierTagger.LOGGER.info("[MSR Tier Tagger] Client ready.");
-    }
-
-    // ── Snapshot helpers ──────────────────────────────────────────────────────
-
-    private static List<ItemStack> snapshotInventory(net.minecraft.client.network.ClientPlayerEntity player) {
-        List<ItemStack> snapshot = new ArrayList<>();
-        var inv = player.getInventory();
-        for (int i = 0; i < inv.size(); i++) {
-            snapshot.add(inv.getStack(i).copy());
-        }
-        return snapshot;
-    }
-
-    private static boolean inventoriesMatch(List<ItemStack> a, List<ItemStack> b) {
-        if (a.size() != b.size()) return false;
-        for (int i = 0; i < a.size(); i++) {
-            ItemStack sa = a.get(i);
-            ItemStack sb = b.get(i);
-            if (!ItemStack.areItemsEqual(sa, sb)) return false;
-            if (sa.getCount() != sb.getCount()) return false;
-        }
-        return true;
     }
 }
