@@ -28,8 +28,10 @@ import net.minecraft.item.Items;
  */
 public class MSRTierTaggerClient implements ClientModInitializer {
 
+    // Single source of truth: the website's data.json. The mod and the site now
+    // read the exact same file, so tier data can never drift between them.
     public static final String TIER_JSON_URL =
-            "https://raw.githubusercontent.com/dbig-d/msr-tier-tagger/master/msr_tiers.json";
+            "https://raw.githubusercontent.com/dbig-d/msr-tierlist/main/data.json";
 
     private enum State { LOBBY, CLEARING, WAITING, IN_MATCH }
 
@@ -52,12 +54,17 @@ public class MSRTierTaggerClient implements ClientModInitializer {
 
         MsrNetwork.register();
 
-        // Cache-bust the GitHub raw URL so a launch never loads a stale CDN copy.
+        // Pull tier data once at launch. Cache-bust the GitHub raw URL so a launch
+        // never loads a stale CDN copy.
         ClientLifecycleEvents.CLIENT_STARTED.register(client ->
                 TierRegistry.fetchAsync(TIER_JSON_URL + "?t=" + System.currentTimeMillis())
         );
 
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
+            // Re-pull on every server join so tier changes show up without a full
+            // game restart. Cache-busted, same as the launch fetch.
+            TierRegistry.fetchAsync(TIER_JSON_URL + "?t=" + System.currentTimeMillis());
+
             if (client.player != null) {
                 client.execute(() -> {
                     MsrNetwork.sendHandshake(client.player.getUuidAsString());
