@@ -52,6 +52,7 @@ public class TierRegistry {
                 conn.setConnectTimeout(8000);
                 conn.setReadTimeout(8000);
                 conn.setRequestProperty("User-Agent", "MSR-TierTagger/1.0");
+                conn.setRequestProperty("Cache-Control", "no-cache");
 
                 if (conn.getResponseCode() != 200) {
                     LOGGER.warn("[MSR] HTTP {} when fetching tier data", conn.getResponseCode());
