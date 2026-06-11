@@ -110,14 +110,14 @@ public class GamemodeDetector {
             // 8. Hybrid SMP — Wind Charges + Cobwebs
             if (counts.getOrDefault(Items.WIND_CHARGE, 0) > 0
                     && counts.getOrDefault(Items.COBWEB, 0) > 0) {
-                return "hybrid";
+                return "hsmp";
             }
 
             // 9. Diamond SMP — Diamond armour + Cobwebs + XP Bottles
             if (hasDiamondArmour(player)
                     && counts.getOrDefault(Items.COBWEB, 0) > 0
                     && counts.getOrDefault(Items.EXPERIENCE_BOTTLE, 0) > 0) {
-                return "smp";
+                return "dsmp";
             }
 
             // 10. Netherite SMP — Netherite armour, no Cobwebs, no Wind Charges

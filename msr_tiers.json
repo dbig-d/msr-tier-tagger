@@ -1,522 +1,733 @@
 {
-  "_comment": "MSR Tier Registry - edit this file and push to GitHub to update tiers for all mod users.",
-  "_tiers": "LT5, HT5, LT4, HT4, LT3, HT3, LT2, HT2, LT1, HT1",
-  "_note": "UUIDs: https://mcuuid.net — use dashed format. P prefix = needs fixing (remove the P).",
-
+  "_comment": "MSR Tier Registry for the Tier Tagger mod. Mirrors the website data model (dbig-d/msr-tierlist data.json): same points, titles, gamemode ids, string-or-object tiers, subtiers and badges. Rank/overall are NOT stored here — the mod computes them from points, exactly like the website.",
+  "points": {
+    "HT1": 70,
+    "LT1": 55,
+    "HT2": 45,
+    "LT2": 38,
+    "HT3": 30,
+    "LT3": 23,
+    "HT4": 17,
+    "LT4": 12,
+    "HT5": 8,
+    "LT5": 5
+  },
+  "titles": [
+    {
+      "min": 450,
+      "name": "Combat Grandmaster",
+      "color": "#ffd76b"
+    },
+    {
+      "min": 350,
+      "name": "Combat Master",
+      "color": "#7bc4ff"
+    },
+    {
+      "min": 250,
+      "name": "Combat Ace",
+      "color": "#a974f0"
+    },
+    {
+      "min": 150,
+      "name": "Combat Specialist",
+      "color": "#54c66b"
+    },
+    {
+      "min": 80,
+      "name": "Combat Cadet",
+      "color": "#4670a0"
+    },
+    {
+      "min": 30,
+      "name": "Combat Novice",
+      "color": "#8aa0bb"
+    },
+    {
+      "min": 0,
+      "name": "Rookie",
+      "color": "#5a6e88"
+    }
+  ],
+  "gamemodes": [
+    {
+      "id": "sword",
+      "name": "Sword"
+    },
+    {
+      "id": "axe",
+      "name": "Axe"
+    },
+    {
+      "id": "uhc",
+      "name": "UHC"
+    },
+    {
+      "id": "mace",
+      "name": "Mace"
+    },
+    {
+      "id": "crystal",
+      "name": "Crystal"
+    },
+    {
+      "id": "dsmp",
+      "name": "Diamond SMP"
+    },
+    {
+      "id": "nsmp",
+      "name": "Netherite SMP"
+    },
+    {
+      "id": "dpot",
+      "name": "Diamond Pot"
+    },
+    {
+      "id": "npot",
+      "name": "Netherite Pot"
+    },
+    {
+      "id": "hsmp",
+      "name": "Hybrid SMP"
+    }
+  ],
+  "subgamemodes": [
+    {
+      "id": "cart",
+      "name": "Cart"
+    },
+    {
+      "id": "pearl",
+      "name": "Pearl Fight"
+    },
+    {
+      "id": "fireball",
+      "name": "Fireball"
+    },
+    {
+      "id": "creeper",
+      "name": "Creeper"
+    },
+    {
+      "id": "spleef",
+      "name": "Spleef"
+    },
+    {
+      "id": "spearmace",
+      "name": "Spear Mace"
+    }
+  ],
   "players": [
     {
-      "username": "__bigd",
-      "uuid": "6c48cb74-1aad-42dc-8b4a-3248e8574ed0",
-      "overall": "LT3",
-      "rank": 13,
-      "tiers": {
-        "sword":   "LT2",
-        "axe":     "HT3",
-        "uhc":     "HT4",
-        "mace":    "LT4",
-        "crystal": "HT5",
-        "smp":     "LT3",
-        "nsmp":    "LT3",
-        "dpot":    "LT4",
-        "npot":    "HT4",
-        "hybrid":  "LT3"
-      },
-      "special": null
-    },
-    {
-      "username": "flashgrnade",
-      "uuid": "6c48cb74-1aad-42dc-8b4a-3248e8574ed0",
-      "overall": "LT3",
-      "rank": 13,
-      "tiers": {
-        "sword":   "LT2",
-        "axe":     "HT3",
-        "uhc":     "HT4",
-        "mace":    "LT4",
-        "crystal": "HT5",
-        "smp":     "LT3",
-        "nsmp":    "LT3",
-        "dpot":    "LT4",
-        "npot":    "HT4",
-        "hybrid":  "LT3"
-      },
-      "special": null,
-      "_note": "old username for __bigd, same UUID"
-    },
-    {
-      "username": "cricketrlz0000",
+      "name": "cricketrlz0000",
       "uuid": "00664629-ce7c-4ce0-8453-3bc5e0c24178",
-      "overall": "HT1",
-      "rank": 1,
+      "premium": true,
+      "tester": true,
+      "house": "blue",
       "tiers": {
-        "sword":   "LT1",
-        "axe":     "LT1",
-        "uhc":     "HT1",
-        "mace":    "HT2",
+        "sword": "LT1",
+        "axe": "LT1",
+        "uhc": "HT1",
+        "mace": "HT2",
         "crystal": "LT2",
-        "smp":     "LT1",
-        "nsmp":    "LT1",
-        "dpot":    "LT1",
-        "npot":    "LT1",
-        "hybrid":  "LT1"
-      },
-      "special": "KING"
+        "dsmp": "LT1",
+        "nsmp": "HT1",
+        "dpot": "LT1",
+        "npot": "LT1",
+        "hsmp": "HT1"
+      }
     },
     {
-      "username": "xqste",
-      "uuid": "a27c7488-7f42-4ef0-abf8-479cae11babc",
-      "overall": "HT1",
-      "rank": 2,
-      "tiers": {
-        "sword":   "LT1",
-        "axe":     "LT1",
-        "uhc":     "LT1",
-        "mace":    "HT1",
-        "crystal": "LT1",
-        "smp":     "LT1",
-        "nsmp":    "HT2",
-        "dpot":    "HT2",
-        "npot":    "HT2",
-        "hybrid":  "HT2"
-      },
-      "special": null
-    },
-    {
-      "username": "Piqt",
-      "uuid": "f2b85707-4565-4b17-9ffc-5662b80bda53",
-      "overall": "LT1",
-      "rank": 3,
-      "tiers": {
-        "sword":   "LT2",
-        "axe":     "HT1",
-        "uhc":     "LT2",
-        "mace":    "LT2",
-        "crystal": "LT1",
-        "smp":     "HT2",
-        "nsmp":    "HT3",
-        "dpot":    "HT2",
-        "npot":    "LT2",
-        "hybrid":  "LT2"
-      },
-      "special": null
-    },
-    {
-      "username": "icedcoffe",
-      "uuid": "PASTE-UUID-HERE",
-      "overall": "LT1",
-      "rank": 4,
-      "tiers": {
-        "sword":   "LT1",
-        "axe":     "LT1",
-        "uhc":     "LT1",
-        "mace":    "LT2",
-        "crystal": "LT1",
-        "smp":     "UNRANKED",
-        "nsmp":    "UNRANKED",
-        "dpot":    "LT1",
-        "npot":    "LT1",
-        "hybrid":  "UNRANKED"
-      },
-      "special": null
-    },
-    {
-      "username": "MrP3nguin_",
-      "uuid": "ae878019-d1c3-41db-ba28-0a241525d281",
-      "overall": "LT1",
-      "rank": 5,
-      "tiers": {
-        "sword":   "HT1",
-        "axe":     "LT1",
-        "uhc":     "HT2",
-        "mace":    "LT1",
-        "crystal": "LT1",
-        "smp":     "HT1",
-        "nsmp":    "UNRANKED",
-        "dpot":    "UNRANKED",
-        "npot":    "LT1",
-        "hybrid":  "UNRANKED"
-      },
-      "special": null
-    },
-    {
-      "username": "Brojules",
+      "name": "Brojules",
       "uuid": "23de923d-b6d5-4d4e-b720-cfde725c66bc",
-      "overall": "HT2",
-      "rank": 6,
+      "premium": true,
+      "house": "red",
       "tiers": {
-        "sword":   "LT1",
-        "axe":     "HT3",
-        "uhc":     "LT2",
-        "mace":    "LT3",
+        "sword": "LT1",
+        "axe": "HT3",
+        "uhc": "LT2",
+        "mace": "LT3",
         "crystal": "LT4",
-        "smp":     "LT2",
-        "nsmp":    "HT3",
-        "dpot":    "LT1",
-        "npot":    "LT2",
-        "hybrid":  "HT3"
-      },
-      "special": null
+        "dsmp": "LT2",
+        "nsmp": "HT3",
+        "dpot": "LT1",
+        "npot": "LT2",
+        "hsmp": "LT2"
+      }
     },
     {
-      "username": "__synn",
-      "uuid": "ce44d3cd-71e8-48f5-9fa4-f6dd218cacad",
-      "overall": "HT2",
-      "rank": 7,
+      "name": "xqste",
+      "uuid": "a27c7488-7f42-4ef0-abf8-479cae11babc",
+      "premium": true,
+      "tester": true,
+      "subtester": "cart",
+      "house": "blue",
       "tiers": {
-        "sword":   "HT2",
-        "axe":     "HT3",
-        "uhc":     "LT2",
-        "mace":    "LT2",
-        "crystal": "HT2",
-        "smp":     "LT2",
-        "nsmp":    "HT3",
-        "dpot":    "HT3",
-        "npot":    "HT3",
-        "hybrid":  "HT3"
-      },
-      "special": null
-    },
-    {
-      "username": "Henrry999",
-      "uuid": "a0ba2a52-1bc7-49a7-b97a-88db72081ca5",
-      "overall": "LT2",
-      "rank": 8,
-      "tiers": {
-        "sword":   "LT2",
-        "axe":     "LT2",
-        "uhc":     "LT2",
-        "mace":    "LT2",
-        "crystal": "LT2",
-        "smp":     "LT2",
-        "nsmp":    "LT2",
-        "dpot":    "LT2",
-        "npot":    "LT2",
-        "hybrid":  "LT2"
-      },
-      "special": "RETIRED"
-    },
-    {
-      "username": "WoodieMC",
-      "uuid": "PASTE-UUID-HERE",
-      "overall": "LT2",
-      "rank": 9,
-      "tiers": {
-        "sword":   "LT1",
-        "axe":     "LT1",
-        "uhc":     "UNRANKED",
-        "mace":    "UNRANKED",
+        "sword": "LT1",
+        "axe": "LT1",
+        "uhc": "LT1",
+        "mace": {
+          "tier": "HT1",
+          "retired": true
+        },
         "crystal": "HT1",
-        "smp":     "HT1",
-        "nsmp":    "UNRANKED",
-        "dpot":    "LT1",
-        "npot":    "UNRANKED",
-        "hybrid":  "UNRANKED"
+        "dsmp": "LT1",
+        "nsmp": "LT1",
+        "dpot": "HT2",
+        "npot": "HT2",
+        "hsmp": "LT1"
       },
-      "special": null
+      "subtiers": {
+        "pearl": "HT3",
+        "cart": "HT3",
+        "creeper": "LT2",
+        "spleef": "LT2",
+        "spearmace": "HT3",
+        "fireball": "LT2"
+      }
     },
     {
-      "username": "Velox2102",
-      "uuid": "309df4f1-9707-40f5-8a63-776ddb23e90d",
-      "overall": "HT3",
-      "rank": 10,
+      "name": "__synn",
+      "uuid": "ce44d3cd-71e8-48f5-9fa4-f6dd218cacad",
+      "premium": true,
+      "subtester": "fireball",
+      "house": "blue",
       "tiers": {
-        "sword":   "LT2",
-        "axe":     "HT4",
-        "uhc":     "HT3",
-        "mace":    "HT2",
-        "crystal": "HT5",
-        "smp":     "HT3",
-        "nsmp":    "HT3",
-        "dpot":    "HT5",
-        "npot":    "LT3",
-        "hybrid":  "LT2"
+        "sword": "LT1",
+        "axe": "HT3",
+        "uhc": "HT2",
+        "mace": "LT2",
+        "crystal": "LT1",
+        "dsmp": "HT2",
+        "nsmp": "HT3",
+        "dpot": "HT3",
+        "npot": "LT2",
+        "hsmp": "HT2"
       },
-      "special": null
+      "subtiers": {
+        "pearl": "HT3",
+        "spleef": "LT4",
+        "fireball": "HT3"
+      }
     },
     {
-      "username": "Jaynaka15",
-      "uuid": "9906065b-1ed1-479d-96f0-38e79c2af9b7",
-      "overall": "HT3",
-      "rank": 11,
+      "name": "contagiousfart",
+      "uuid": null,
+      "house": "green",
       "tiers": {
-        "sword":   "HT3",
-        "axe":     "LT3",
-        "uhc":     "LT3",
-        "mace":    "UNRANKED",
-        "crystal": "LT5",
-        "smp":     "LT3",
-        "nsmp":    "HT4",
-        "dpot":    "UNRANKED",
-        "npot":    "UNRANKED",
-        "hybrid":  "UNRANKED"
-      },
-      "special": null
+        "sword": "HT2",
+        "axe": "LT2",
+        "dsmp": "LT3",
+        "dpot": "HT2",
+        "nsmp": "HT3"
+      }
     },
     {
-      "username": "D2ck000",
-      "uuid": "75b27c77-1434-4c97-a2df-9d0e0d7ceffc",
-      "overall": "LT3",
-      "rank": 12,
+      "name": "Piqt",
+      "uuid": "f2b85707-4565-4b17-9ffc-5662b80bda53",
+      "premium": true,
+      "house": "green",
       "tiers": {
-        "sword":   "LT3",
-        "axe":     "HT4",
-        "uhc":     "LT3",
-        "mace":    "HT3",
-        "crystal": "LT2",
-        "smp":     "HT4",
-        "nsmp":    "LT5",
-        "dpot":    "HT5",
-        "npot":    "HT5",
-        "hybrid":  "HT4"
+        "sword": "LT2",
+        "axe": "LT1",
+        "uhc": "LT2",
+        "mace": "HT3",
+        "crystal": "LT1",
+        "dsmp": "HT2",
+        "nsmp": "HT3",
+        "dpot": "HT2",
+        "npot": "LT2",
+        "hsmp": "HT2"
       },
-      "special": null
+      "subtiers": {
+        "cart": "LT3",
+        "fireball": "HT3"
+      }
     },
     {
-      "username": "contagiousfart",
-      "uuid": "PASTE-UUID-HERE",
-      "overall": "LT3",
-      "rank": 14,
-      "tiers": {
-        "sword":   "UNRANKED",
-        "axe":     "LT2",
-        "uhc":     "UNRANKED",
-        "mace":    "UNRANKED",
-        "crystal": "UNRANKED",
-        "smp":     "LT3",
-        "nsmp":    "UNRANKED",
-        "dpot":    "HT2",
-        "npot":    "UNRANKED",
-        "hybrid":  "UNRANKED"
-      },
-      "special": null
-    },
-    {
-      "username": "CoolIcee",
-      "uuid": "e018a0c4-f8f5-4f73-aaab-1844b4755de3",
-      "overall": "LT3",
-      "rank": 15,
-      "tiers": {
-        "sword":   "LT3",
-        "axe":     "HT3",
-        "uhc":     "UNRANKED",
-        "mace":    "LT3",
-        "crystal": "UNRANKED",
-        "smp":     "LT3",
-        "nsmp":    "LT3",
-        "dpot":    "UNRANKED",
-        "npot":    "UNRANKED",
-        "hybrid":  "HT3"
-      },
-      "special": null
-    },
-    {
-      "username": "_Knife__",
+      "name": "_knife__",
       "uuid": "a2fb2215-89e1-4292-91a1-ccb32ab6f063",
-      "overall": "HT4",
-      "rank": 16,
+      "premium": true,
+      "house": "green",
       "tiers": {
-        "sword":   "LT2",
-        "axe":     "LT4",
-        "uhc":     "LT3",
-        "mace":    "HT5",
+        "sword": "LT2",
+        "axe": "LT4",
+        "uhc": "LT3",
+        "mace": "HT3",
         "crystal": "HT5",
-        "smp":     "HT4",
-        "nsmp":    "LT4",
-        "dpot":    "LT4",
-        "npot":    "HT4",
-        "hybrid":  "HT4"
+        "dsmp": "HT4",
+        "nsmp": "LT4",
+        "dpot": "LT4",
+        "npot": "HT4",
+        "hsmp": "LT3"
       },
-      "special": null
+      "subtiers": {
+        "pearl": "HT5"
+      }
     },
     {
-      "username": "Gameories",
-      "uuid": "eb2bfb83-31d9-41e9-9cd2-677f550e2817",
-      "overall": "HT4",
-      "rank": 17,
+      "name": "__bigd",
+      "uuid": "6c48cb74-1aad-42dc-8b4a-3248e8574ed0",
+      "premium": true,
+      "developer": true,
+      "subtester": "pearl",
+      "house": "yellow",
       "tiers": {
-        "sword":   "HT4",
-        "axe":     "LT3",
-        "uhc":     "LT3",
-        "mace":    "UNRANKED",
+        "sword": "HT2",
+        "axe": "HT3",
+        "uhc": "HT3",
+        "mace": "LT3",
+        "crystal": "HT5",
+        "dsmp": "LT3",
+        "nsmp": "LT3",
+        "dpot": "HT4",
+        "npot": "HT4",
+        "hsmp": "HT3"
+      },
+      "subtiers": {
+        "pearl": "LT2",
+        "spleef": "LT4"
+      }
+    },
+    {
+      "name": "Velox2102",
+      "uuid": "309df4f1-9707-40f5-8a63-776ddb23e90d",
+      "premium": true,
+      "house": "yellow",
+      "tiers": {
+        "sword": "LT2",
+        "axe": "HT4",
+        "uhc": "HT3",
+        "mace": "HT2",
         "crystal": "LT3",
-        "smp":     "HT4",
-        "nsmp":    "HT4",
-        "dpot":    "LT3",
-        "npot":    "UNRANKED",
-        "hybrid":  "HT4"
+        "dsmp": "LT2",
+        "nsmp": "HT3",
+        "dpot": "LT3",
+        "npot": "LT3",
+        "hsmp": "HT2"
       },
-      "special": null
+      "subtiers": {
+        "pearl": "HT4",
+        "spleef": "LT3"
+      }
     },
     {
-      "username": "Darth_dragony",
-      "uuid": "PASTE-UUID-HERE",
-      "overall": "LT4",
-      "rank": 18,
+      "name": "a_noble",
+      "uuid": "b5513e5a-c6ee-4475-ae30-01e216b1ba21",
       "tiers": {
-        "sword":   "HT4",
-        "axe":     "UNRANKED",
-        "uhc":     "UNRANKED",
-        "mace":    "HT2",
+        "sword": "LT2",
+        "axe": "HT3",
+        "uhc": "HT3",
+        "mace": "LT4",
+        "dpot": "LT2",
+        "hsmp": "HT4"
+      }
+    },
+    {
+      "name": "Jaynaka15",
+      "uuid": "9906065b-1ed1-479d-96f0-38e79c2af9b7",
+      "subtester": "spleef",
+      "house": "red",
+      "tiers": {
+        "sword": "HT3",
+        "axe": "HT3",
+        "uhc": "HT3",
+        "crystal": "LT3",
+        "dsmp": "LT3",
+        "nsmp": "HT4",
+        "npot": "LT2",
+        "mace": "LT3",
+        "dpot": "LT2",
+        "hsmp": "LT2"
+      },
+      "subtiers": {
+        "pearl": "LT4",
+        "spleef": "HT3"
+      }
+    },
+    {
+      "name": "D2ck000",
+      "uuid": null,
+      "premium": true,
+      "subtester": "creeper",
+      "house": "yellow",
+      "tiers": {
+        "sword": "LT3",
+        "axe": "HT4",
+        "uhc": "HT4",
+        "mace": "HT3",
         "crystal": "LT2",
-        "smp":     "UNRANKED",
-        "nsmp":    "UNRANKED",
-        "dpot":    "UNRANKED",
-        "npot":    "UNRANKED",
-        "hybrid":  "UNRANKED"
+        "dsmp": "HT4",
+        "nsmp": "LT5",
+        "dpot": "HT5",
+        "npot": "HT5",
+        "hsmp": "LT3"
       },
-      "special": null
+      "subtiers": {
+        "creeper": "HT3"
+      }
     },
     {
-      "username": "bigmaclover21",
-      "uuid": "PASTE-UUID-HERE",
-      "overall": "LT4",
-      "rank": 19,
+      "name": "CoolIcee",
+      "uuid": "e018a0c4-f8f5-4f73-aaab-1844b4755de3",
+      "premium": true,
+      "developer": true,
+      "house": "blue",
       "tiers": {
-        "sword":   "LT4",
-        "axe":     "HT4",
-        "uhc":     "LT4",
-        "mace":    "HT5",
-        "crystal": "HT5",
-        "smp":     "HT4",
-        "nsmp":    "UNRANKED",
-        "dpot":    "UNRANKED",
-        "npot":    "UNRANKED",
-        "hybrid":  "UNRANKED"
+        "sword": "LT3",
+        "axe": "HT3",
+        "mace": "LT2",
+        "dsmp": "LT3",
+        "nsmp": "LT3",
+        "hsmp": "LT2",
+        "uhc": {
+          "tier": "LT2",
+          "retired": true
+        }
       },
-      "special": null
+      "subtiers": {
+        "pearl": "HT5"
+      }
     },
     {
-      "username": "BizarreOwl309",
-      "uuid": "PASTE-UUID-HERE",
-      "overall": "LT5",
-      "rank": 20,
+      "name": "Gameories",
+      "uuid": "eb2bfb83-31d9-41e9-9cd2-677f550e2817",
+      "premium": true,
+      "house": "yellow",
       "tiers": {
-        "sword":   "HT4",
-        "axe":     "UNRANKED",
-        "uhc":     "UNRANKED",
-        "mace":    "UNRANKED",
-        "crystal": "LT2",
-        "smp":     "UNRANKED",
-        "nsmp":    "UNRANKED",
-        "dpot":    "UNRANKED",
-        "npot":    "UNRANKED",
-        "hybrid":  "UNRANKED"
-      },
-      "special": null
+        "sword": "HT4",
+        "axe": "LT3",
+        "uhc": "LT3",
+        "crystal": "LT3",
+        "dsmp": "HT4",
+        "nsmp": "HT4",
+        "dpot": "LT3"
+      }
     },
     {
-      "username": "Strongman09",
-      "uuid": "PASTE-UUID-HERE",
-      "overall": "LT5",
-      "rank": 21,
+      "name": "g0d0rs4tan",
+      "uuid": "dfbdf120-f551-4f1a-a4c1-b587bb7a4f27",
       "tiers": {
-        "sword":   "UNRANKED",
-        "axe":     "LT4",
-        "uhc":     "LT4",
-        "mace":    "LT5",
-        "crystal": "UNRANKED",
-        "smp":     "HT5",
-        "nsmp":    "HT5",
-        "dpot":    "UNRANKED",
-        "npot":    "UNRANKED",
-        "hybrid":  "UNRANKED"
-      },
-      "special": "RETIRED"
+        "sword": {
+          "tier": "HT4",
+          "retired": true
+        },
+        "axe": {
+          "tier": "LT5",
+          "retired": true
+        }
+      }
     },
     {
-      "username": "ZzAsleepzZ",
-      "uuid": "PASTE-UUID-HERE",
-      "overall": "LT5",
-      "rank": 22,
+      "name": "BizarreOwl309",
+      "uuid": "496f4d43-b56a-46cf-b9f3-cfb71f763476",
       "tiers": {
-        "sword":   "UNRANKED",
-        "axe":     "HT4",
-        "uhc":     "LT5",
-        "mace":    "HT5",
-        "crystal": "UNRANKED",
-        "smp":     "UNRANKED",
-        "nsmp":    "UNRANKED",
-        "dpot":    "UNRANKED",
-        "npot":    "UNRANKED",
-        "hybrid":  "UNRANKED"
-      },
-      "special": null
+        "sword": "HT4",
+        "crystal": "LT2"
+      }
     },
     {
-      "username": "epicddss",
-      "uuid": "f14bcce3-674c-4074-b48e-b55db1cbc57c",
-      "overall": "LT5",
-      "rank": 23,
+      "name": "Darth_Dragony",
+      "uuid": "0ac7c02e-a168-4965-967f-19c8ddfd1983",
+      "house": "red",
       "tiers": {
-        "sword":   "UNRANKED",
-        "axe":     "LT2",
-        "uhc":     "UNRANKED",
-        "mace":    "UNRANKED",
-        "crystal": "UNRANKED",
-        "smp":     "UNRANKED",
-        "nsmp":    "UNRANKED",
-        "dpot":    "UNRANKED",
-        "npot":    "UNRANKED",
-        "hybrid":  "UNRANKED"
-      },
-      "special": null
+        "sword": "HT3",
+        "mace": "HT2",
+        "crystal": "LT2"
+      }
     },
     {
-      "username": "BigA_1",
+      "name": "BigA_1",
       "uuid": "ab5484eb-8f8e-4048-9619-9bff2cbb5d06",
-      "overall": "LT5",
-      "rank": 24,
+      "premium": true,
+      "house": "blue",
       "tiers": {
-        "sword":   "HT4",
-        "axe":     "LT3",
-        "uhc":     "UNRANKED",
-        "mace":    "UNRANKED",
-        "crystal": "UNRANKED",
-        "smp":     "UNRANKED",
-        "nsmp":    "UNRANKED",
-        "dpot":    "UNRANKED",
-        "npot":    "UNRANKED",
-        "hybrid":  "UNRANKED"
-      },
-      "special": null
+        "sword": "LT3",
+        "axe": "LT3",
+        "uhc": "HT4",
+        "mace": "LT4"
+      }
     },
     {
-      "username": "Bronzon155",
-      "uuid": "PASTE-UUID-HERE",
-      "overall": "LT5",
-      "rank": 25,
+      "name": "WaterSkies",
+      "uuid": "f1386e70-a6de-4403-a9c1-b6c4642904df",
+      "house": "green",
       "tiers": {
-        "sword":   "UNRANKED",
-        "axe":     "LT5",
-        "uhc":     "UNRANKED",
-        "mace":    "UNRANKED",
-        "crystal": "UNRANKED",
-        "smp":     "HT5",
-        "nsmp":    "UNRANKED",
-        "dpot":    "UNRANKED",
-        "npot":    "UNRANKED",
-        "hybrid":  "UNRANKED"
-      },
-      "special": "RETIRED"
+        "sword": "HT4",
+        "axe": "LT3",
+        "mace": "LT4",
+        "crystal": "HT2",
+        "dsmp": "HT4",
+        "hsmp": "LT4"
+      }
     },
     {
-      "username": "g0d0rs4tan",
-      "uuid": "PASTE-UUID-HERE",
-      "overall": "LT5",
-      "rank": 26,
+      "name": "Qiubius",
+      "uuid": "0ec2d4f8-440d-4101-a6f6-b5d7c1eb5d71",
       "tiers": {
-        "sword":   "UNRANKED",
-        "axe":     "LT5",
-        "uhc":     "UNRANKED",
-        "mace":    "UNRANKED",
-        "crystal": "UNRANKED",
-        "smp":     "UNRANKED",
-        "nsmp":    "UNRANKED",
-        "dpot":    "UNRANKED",
-        "npot":    "UNRANKED",
-        "hybrid":  "UNRANKED"
+        "sword": "HT4",
+        "axe": "LT4",
+        "uhc": "HT4",
+        "dsmp": "LT4",
+        "hsmp": "LT4"
+      }
+    },
+    {
+      "name": "bigmaclover2121",
+      "uuid": "0998bd2f-42d2-4606-9909-f372e9dbf952",
+      "premium": true,
+      "house": "red",
+      "tiers": {
+        "sword": "LT4",
+        "axe": "HT4",
+        "uhc": "LT4",
+        "mace": "HT5",
+        "crystal": "HT5",
+        "dsmp": "HT4"
+      }
+    },
+    {
+      "name": "ZzAsleepzZ",
+      "uuid": "0fcc8d78-4853-4091-a4ad-0256794d5bc6",
+      "premium": true,
+      "house": "green",
+      "tiers": {
+        "sword": "LT4",
+        "axe": "HT4",
+        "uhc": "LT5",
+        "mace": "HT5"
+      }
+    },
+    {
+      "name": "brandvogel",
+      "uuid": "3a1e8078-5b8b-4b0c-b078-76a70fb04a64",
+      "house": "yellow",
+      "tiers": {
+        "sword": "LT4",
+        "hsmp": "HT5"
+      }
+    },
+    {
+      "name": "epicddss",
+      "uuid": "f14bcce3-674c-4074-b48e-b55db1cbc57c",
+      "premium": true,
+      "tiers": {
+        "axe": "LT2"
+      }
+    },
+    {
+      "name": "StrongMan09",
+      "uuid": "619a105b-a324-43e9-8588-3e1dd945fa51",
+      "premium": true,
+      "tiers": {
+        "axe": {
+          "tier": "LT4",
+          "retired": true
+        },
+        "uhc": {
+          "tier": "LT4",
+          "retired": true
+        },
+        "mace": {
+          "tier": "LT5",
+          "retired": true
+        },
+        "dsmp": {
+          "tier": "HT5",
+          "retired": true
+        },
+        "nsmp": {
+          "tier": "HT5",
+          "retired": true
+        },
+        "sword": {
+          "tier": "HT5",
+          "retired": true
+        }
+      }
+    },
+    {
+      "name": "Bronzon155",
+      "uuid": "e089c360-1d01-402f-849e-6a7fcbac12ec",
+      "tiers": {
+        "axe": {
+          "tier": "LT5",
+          "retired": true
+        },
+        "dsmp": {
+          "tier": "LT4",
+          "retired": true
+        },
+        "sword": {
+          "tier": "HT5",
+          "retired": true
+        }
+      }
+    },
+    {
+      "name": "Auspower88",
+      "uuid": "2688ebfe-38a5-40a5-bedf-7f98b9707c62",
+      "house": "yellow",
+      "tiers": {
+        "uhc": "HT3",
+        "dsmp": "HT4",
+        "hsmp": "HT3",
+        "mace": "HT4"
+      }
+    },
+    {
+      "name": "qonobo",
+      "uuid": "88fc99e5-39fe-4444-a699-1f0fa5cd37ab",
+      "premium": true,
+      "house": "green",
+      "tiers": {
+        "mace": "HT4",
+        "dsmp": "LT4",
+        "hsmp": "LT5"
+      }
+    },
+    {
+      "name": "ovenokara",
+      "uuid": "141f75aa-566f-449f-8312-1e81ca55ecd4",
+      "house": "blue",
+      "tiers": {
+        "dsmp": "LT3",
+        "mace": "HT3"
+      }
+    },
+    {
+      "name": "FinKi_",
+      "uuid": "4e2beabd-bb47-4b2b-80fb-06a8205cb4bb",
+      "tiers": {
+        "dsmp": "HT5",
+        "hsmp": "LT5"
+      }
+    },
+    {
+      "name": "_vendofy_",
+      "uuid": "c32a4e8a-7a3b-4477-a276-b0fee05f0911",
+      "house": "blue",
+      "tiers": {
+        "dsmp": "LT5",
+        "hsmp": "HT5"
+      }
+    },
+    {
+      "name": "fanaticbbsi51633",
+      "uuid": "4faa36a4-e993-4cbd-a2ff-e88b11435d7f",
+      "tiers": {
+        "hsmp": "LT1"
+      }
+    },
+    {
+      "name": "MrP3nguin_",
+      "uuid": "ae878019-d1c3-41db-ba28-0a241525d281",
+      "premium": true,
+      "house": "yellow",
+      "tiers": {
+        "dsmp": {
+          "tier": "HT1",
+          "retired": true
+        },
+        "uhc": {
+          "tier": "HT2",
+          "retired": true
+        },
+        "axe": {
+          "tier": "LT1",
+          "retired": true
+        },
+        "npot": {
+          "tier": "LT1",
+          "retired": true
+        },
+        "crystal": {
+          "tier": "LT1",
+          "retired": true
+        },
+        "mace": {
+          "tier": "LT1",
+          "retired": true
+        },
+        "sword": {
+          "tier": "HT1",
+          "retired": true
+        }
+      }
+    },
+    {
+      "name": "fanaticloudy",
+      "uuid": "d4e8d1c6-fc4c-42d3-b735-b44a00918c5c",
+      "tiers": {
+        "hsmp": "LT2",
+        "dsmp": "HT3"
+      }
+    },
+    {
+      "name": "ThornierChunk58",
+      "uuid": "540e8fad-4048-4054-97b6-d3bb8d22def2",
+      "tiers": {
+        "dsmp": "HT5",
+        "hsmp": "LT5",
+        "mace": "HT5",
+        "crystal": "LT2"
+      }
+    },
+    {
+      "name": "Henrry999",
+      "uuid": "a0ba2a52-1bc7-49a7-b97a-88db72081ca5",
+      "premium": true,
+      "house": "green",
+      "tiers": {
+        "dsmp": {
+          "tier": "LT1",
+          "retired": true
+        },
+        "uhc": {
+          "tier": "LT1",
+          "retired": true
+        },
+        "sword": {
+          "tier": "LT1",
+          "retired": true
+        },
+        "axe": {
+          "tier": "HT1",
+          "retired": true
+        },
+        "crystal": {
+          "tier": "HT3",
+          "retired": true
+        },
+        "mace": {
+          "tier": "LT1",
+          "retired": true
+        }
       },
-      "special": "RETIRED"
+      "subtiers": {
+        "cart": "HT3"
+      }
+    },
+    {
+      "name": "ThatYibble",
+      "uuid": "00dfac99-c780-47fb-9fdb-07c1a900380c",
+      "tiers": {
+        "uhc": "LT3",
+        "hsmp": "LT5"
+      }
+    },
+    {
+      "name": "TheBestMonster",
+      "uuid": "beaac19a-4878-4a4b-a19a-b7e760d30651",
+      "tiers": {
+        "sword": "LT3"
+      }
+    },
+    {
+      "name": "BizzareOwl309",
+      "uuid": null,
+      "house": "blue",
+      "tiers": {}
     }
   ]
 }
