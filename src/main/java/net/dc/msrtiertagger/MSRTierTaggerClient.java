@@ -52,8 +52,9 @@ public class MSRTierTaggerClient implements ClientModInitializer {
 
         MsrNetwork.register();
 
+        // Cache-bust the GitHub raw URL so a launch never loads a stale CDN copy.
         ClientLifecycleEvents.CLIENT_STARTED.register(client ->
-                TierRegistry.fetchAsync(TIER_JSON_URL)
+                TierRegistry.fetchAsync(TIER_JSON_URL + "?t=" + System.currentTimeMillis())
         );
 
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {

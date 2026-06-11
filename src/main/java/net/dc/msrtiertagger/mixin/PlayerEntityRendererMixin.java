@@ -16,6 +16,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Mixin(PlayerEntityRenderer.class)
 public abstract class PlayerEntityRendererMixin {
@@ -33,35 +34,39 @@ public abstract class PlayerEntityRendererMixin {
         try {
             if (state.displayName == null) return;
 
-            String username = state.displayName.getString();
-            if (username == null || username.isBlank()) return;
-
-            Optional<PlayerTier> opt = TierRegistry.getByUsername(username);
-
-            if (opt.isPresent()) {
-                // Use gamemode-specific tier for the local player,
-                // overall tier for everyone else
-                MinecraftClient mc = MinecraftClient.getInstance();
-                boolean isLocalPlayer = mc != null && mc.player != null
-                        && mc.player.getName().getString().equals(username);
-                String gamemode = isLocalPlayer
-                        ? net.dc.msrtiertagger.data.GamemodeDetector.getCurrentGamemode()
-                        : null;
-                MutableText badge = TierRegistry.buildBadge(opt.get(), gamemode);
-                // Use Text.literal(username) with explicit white — this fully breaks
-                // style inheritance so the name never picks up the tier colour
-                MutableText whiteName = Text.literal(username)
-                        .setStyle(Style.EMPTY.withColor(Formatting.WHITE).withBold(false));
-                state.displayName = badge.append(whiteName);
-                return;
+            // Resolve the player by UUID first. Servers (e.g. mcpvp.club) wrap the
+            // nametag with team/rank prefixes, so the display-name string is often
+            // NOT the bare username — which is why a name-only lookup showed [?]
+            // even for ranked players. The client always knows the real UUID, so we
+            // match on that and only fall back to the name for entries without one.
+            UUID uuid = player.getUuid();
+            Optional<PlayerTier> opt = uuid != null
+                    ? TierRegistry.getByUuid(uuid.toString())
+                    : Optional.empty();
+            if (opt.isEmpty()) {
+                String shown = state.displayName.getString();
+                if (shown != null && !shown.isBlank()) {
+                    opt = TierRegistry.getByUsername(shown);
+                }
             }
+            if (opt.isEmpty()) return; // not a ranked player — leave the nametag as-is
 
-            // [?] for players not in JSON — comment out these 2 lines when done testing
-            MutableText unknown = Text.literal("[?] ")
-                    .setStyle(Style.EMPTY.withColor(Formatting.DARK_GRAY).withItalic(true));
-            MutableText whiteUnknownName = Text.literal(username)
+            PlayerTier tier = opt.get();
+
+            // Use gamemode-specific tier for the local player, overall for everyone else.
+            MinecraftClient mc = MinecraftClient.getInstance();
+            boolean isLocalPlayer = mc != null && mc.player != null
+                    && uuid != null && mc.player.getUuid().equals(uuid);
+            String gamemode = isLocalPlayer
+                    ? net.dc.msrtiertagger.data.GamemodeDetector.getCurrentGamemode()
+                    : null;
+
+            MutableText badge = TierRegistry.buildBadge(tier, gamemode);
+            // Render the canonical MSR name in explicit white — this fully breaks
+            // style inheritance so the name never picks up the tier colour.
+            MutableText whiteName = Text.literal(tier.name())
                     .setStyle(Style.EMPTY.withColor(Formatting.WHITE).withBold(false));
-            state.displayName = unknown.append(whiteUnknownName);
+            state.displayName = badge.append(whiteName);
 
         } catch (Exception e) {
             // never crash for cosmetics
