@@ -251,22 +251,24 @@ public class TierRegistry {
 
     /**
      * Builds the coloured tier badge text shown before a player's name, with a
-     * trailing separator (e.g. "🗡 HT1 | ") — used for the chat prefix.
+     * trailing separator (e.g. "HT1 🗡 | ") — used for the chat prefix.
      */
     public static MutableText buildBadge(PlayerTier player, String gamemode) {
         return buildBadgeCore(player, gamemode).append(separator());
     }
 
     /**
-     * The badge without any separator — just "icon + tier" or "icon + #rank".
+     * The badge without any separator — just "tier + icon" or "#rank + icon",
+     * with the icon on the outer (right) edge.
      *
      * If a gamemode is supplied (the local player's detected mode) and the player
-     * has a placement there, this is that gamemode's icon + tier (e.g. "🗡 HT1").
+     * has a placement there, this is that gamemode's tier + icon (e.g. "HT1 🗡").
      * Otherwise it is the player's independently-computed overall standing — their
-     * rank icon + rank, coloured by their title (e.g. "🏅 #3").
+     * rank + rank icon, coloured by their title (e.g. "#3 🏅").
      *
-     * The nametag composes this on the RIGHT of the name so it never collides with
-     * icons other mods (e.g. Essentials) draw to the left of the nametag.
+     * The nametag composes this on the RIGHT of the name ("name | tier icon") so
+     * the icon sits furthest right and never collides with icons other mods
+     * (e.g. Essentials) draw to the left of the nametag.
      */
     public static MutableText buildBadgeCore(PlayerTier player, String gamemode) {
         // Gamemode-specific main tier when we know what the player is queued in.
@@ -279,7 +281,7 @@ public class TierRegistry {
                         .setStyle(Style.EMPTY
                                 .withColor(tierColourRgb(te.tier()))
                                 .withBold(bold));
-                return withIcon(modeIcon(gamemode), tierPart);
+                return withIcon(tierPart, modeIcon(gamemode));
             }
         }
 
@@ -291,7 +293,7 @@ public class TierRegistry {
 
         MutableText rankPart = Text.literal("#" + player.rank() + suffix)
                 .setStyle(Style.EMPTY.withColor(colour).withBold(bold));
-        return withIcon(rankIcon(player.title()), rankPart);
+        return withIcon(rankPart, rankIcon(player.title()));
     }
 
     /** The grey " | " separator between the badge and the name. */
@@ -300,21 +302,23 @@ public class TierRegistry {
     }
 
     /**
-     * Prepends an icon glyph (+ a thin space) to a badge part, if the icon exists.
+     * Appends an icon glyph (after a thin space) to a badge part, if the icon
+     * exists — so the badge reads "tier icon" / "#rank icon", with the icon on
+     * the outer (right) edge.
      *
-     * The pieces are appended to a neutral empty root — NOT to the icon — so the
+     * The pieces are appended to a neutral empty root — NOT to the part — so the
      * icon font stays confined to the glyph. Siblings inherit unset style from the
-     * parent, so making the icon the root would force the tier/rank text into the
-     * icon font, which has no letters/digits and renders them as missing-glyph
-     * rectangles.
+     * parent, so reusing the part as the root could leak its colour onto the icon
+     * (and an icon-rooted tree would force the tier/rank text into the icon font,
+     * which has no letters/digits and renders them as missing-glyph rectangles).
      */
-    private static MutableText withIcon(MutableText icon, MutableText part) {
+    private static MutableText withIcon(MutableText part, MutableText icon) {
         if (icon == null) return part;
         return Text.empty()
-                .append(icon)
+                .append(part)
                 .append(Text.literal(" ")
                         .setStyle(Style.EMPTY.withColor(Formatting.WHITE).withBold(false)))
-                .append(part);
+                .append(icon);
     }
 
     /** Overload — shows overall standing when no gamemode is active. */
