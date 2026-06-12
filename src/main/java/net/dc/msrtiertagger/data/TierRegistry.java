@@ -250,15 +250,25 @@ public class TierRegistry {
     // ── Badge builder ─────────────────────────────────────────────────────────
 
     /**
-     * Builds the coloured tier badge text shown before a player's name.
-     *
-     * If a gamemode is supplied (the local player's detected mode) and the player
-     * has a placement there, the badge shows that gamemode's icon + tier
-     * (e.g. "🗡 HT1 | "). Otherwise it shows the player's independently-computed
-     * overall standing — their rank icon + rank, coloured by their title
-     * (e.g. "🏅 #3 | ").
+     * Builds the coloured tier badge text shown before a player's name, with a
+     * trailing separator (e.g. "🗡 HT1 | ") — used for the chat prefix.
      */
     public static MutableText buildBadge(PlayerTier player, String gamemode) {
+        return buildBadgeCore(player, gamemode).append(separator());
+    }
+
+    /**
+     * The badge without any separator — just "icon + tier" or "icon + #rank".
+     *
+     * If a gamemode is supplied (the local player's detected mode) and the player
+     * has a placement there, this is that gamemode's icon + tier (e.g. "🗡 HT1").
+     * Otherwise it is the player's independently-computed overall standing — their
+     * rank icon + rank, coloured by their title (e.g. "🏅 #3").
+     *
+     * The nametag composes this on the RIGHT of the name so it never collides with
+     * icons other mods (e.g. Essentials) draw to the left of the nametag.
+     */
+    public static MutableText buildBadgeCore(PlayerTier player, String gamemode) {
         // Gamemode-specific main tier when we know what the player is queued in.
         if (gamemode != null) {
             TierEntry te = player.tiers().get(gamemode);
@@ -269,19 +279,24 @@ public class TierRegistry {
                         .setStyle(Style.EMPTY
                                 .withColor(tierColourRgb(te.tier()))
                                 .withBold(bold));
-                return withIcon(modeIcon(gamemode), tierPart).append(separator());
+                return withIcon(modeIcon(gamemode), tierPart);
             }
         }
 
         // Default: overall standing (rank), coloured by the player's title.
-        String suffix = player.developer() ? " ⚙"                  // gear  = developer
-                : (player.isFullyRetired() ? " †" : "");           // dagger = retired
+        // (No developer gear here — the rank icon already conveys standing.)
+        String suffix = player.isFullyRetired() ? " †" : ""; // dagger = retired
         boolean bold = player.rank() <= 3;
         int colour = player.title() != null ? player.title().colorRgb() : 0xFFFFFF;
 
         MutableText rankPart = Text.literal("#" + player.rank() + suffix)
                 .setStyle(Style.EMPTY.withColor(colour).withBold(bold));
-        return withIcon(rankIcon(player.title()), rankPart).append(separator());
+        return withIcon(rankIcon(player.title()), rankPart);
+    }
+
+    /** The grey " | " separator between the badge and the name. */
+    public static MutableText separatorText() {
+        return separator();
     }
 
     /**
