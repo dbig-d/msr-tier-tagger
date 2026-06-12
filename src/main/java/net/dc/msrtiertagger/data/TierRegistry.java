@@ -284,10 +284,20 @@ public class TierRegistry {
         return withIcon(rankIcon(player.title()), rankPart).append(separator());
     }
 
-    /** Prepends an icon glyph (+ a thin space) to a badge part, if the icon exists. */
+    /**
+     * Prepends an icon glyph (+ a thin space) to a badge part, if the icon exists.
+     *
+     * The pieces are appended to a neutral empty root — NOT to the icon — so the
+     * icon font stays confined to the glyph. Siblings inherit unset style from the
+     * parent, so making the icon the root would force the tier/rank text into the
+     * icon font, which has no letters/digits and renders them as missing-glyph
+     * rectangles.
+     */
     private static MutableText withIcon(MutableText icon, MutableText part) {
         if (icon == null) return part;
-        return icon.append(Text.literal(" ")
+        return Text.empty()
+                .append(icon)
+                .append(Text.literal(" ")
                         .setStyle(Style.EMPTY.withColor(Formatting.WHITE).withBold(false)))
                 .append(part);
     }
