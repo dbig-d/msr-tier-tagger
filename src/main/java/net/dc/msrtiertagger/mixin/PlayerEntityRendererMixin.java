@@ -61,12 +61,18 @@ public abstract class PlayerEntityRendererMixin {
                     ? net.dc.msrtiertagger.data.GamemodeDetector.getCurrentGamemode()
                     : null;
 
-            MutableText badge = TierRegistry.buildBadge(tier, gamemode);
             // Render the canonical MSR name in explicit white — this fully breaks
             // style inheritance so the name never picks up the tier colour.
             MutableText whiteName = Text.literal(tier.name())
                     .setStyle(Style.EMPTY.withColor(Formatting.WHITE).withBold(false));
-            state.displayName = badge.append(whiteName);
+
+            // Put the badge on the RIGHT of the name (e.g. "__bigd | 🗡 HT1").
+            // Other mods (e.g. Essentials) draw their own icon to the LEFT of the
+            // nametag; keeping our badge on the right avoids colliding with it.
+            MutableText badgeCore = TierRegistry.buildBadgeCore(tier, gamemode);
+            state.displayName = whiteName
+                    .append(TierRegistry.separatorText())
+                    .append(badgeCore);
 
         } catch (Exception e) {
             // never crash for cosmetics
