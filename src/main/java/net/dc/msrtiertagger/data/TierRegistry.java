@@ -3,8 +3,10 @@ package net.dc.msrtiertagger.data;
 import com.google.gson.*;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
+import net.minecraft.text.StyleSpriteSource;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -193,15 +195,68 @@ public class TierRegistry {
         };
     }
 
+    // ── Icon font (gamemode + rank glyphs) ──────────────────────────────────────
+    // A custom bitmap font ships 16×16 icons mapped to private-use-area codepoints
+    // (see assets/msr-tier-tagger/font/icons.json). Glyphs are tinted by the text
+    // colour, so we render them in white to preserve their original artwork.
+
+    public static final StyleSpriteSource ICON_FONT =
+            new StyleSpriteSource.Font(Identifier.of("msr-tier-tagger", "icons"));
+
+    /** Main gamemode id -> glyph codepoint (matches the font's "modes" providers). */
+    private static final Map<String, String> MODE_GLYPHS = new HashMap<>();
+    /** Normalised title name -> glyph codepoint (matches the font's "ranks" providers). */
+    private static final Map<String, String> RANK_GLYPHS = new HashMap<>();
+    static {
+        MODE_GLYPHS.put("sword",   "\uE000");
+        MODE_GLYPHS.put("axe",     "\uE001");
+        MODE_GLYPHS.put("uhc",     "\uE002");
+        MODE_GLYPHS.put("mace",    "\uE003");
+        MODE_GLYPHS.put("crystal", "\uE004");
+        MODE_GLYPHS.put("dsmp",    "\uE005");
+        MODE_GLYPHS.put("nsmp",    "\uE006");
+        MODE_GLYPHS.put("dpot",    "\uE007");
+        MODE_GLYPHS.put("npot",    "\uE008");
+        MODE_GLYPHS.put("hsmp",    "\uE009");
+
+        RANK_GLYPHS.put("combatgrandmaster", "\uE100");
+        RANK_GLYPHS.put("combatmaster",      "\uE101");
+        RANK_GLYPHS.put("combatace",         "\uE102");
+        RANK_GLYPHS.put("combatspecialist",  "\uE103");
+        RANK_GLYPHS.put("combatcadet",       "\uE104");
+        RANK_GLYPHS.put("combatnovice",      "\uE105");
+        RANK_GLYPHS.put("rookie",            "\uE106");
+    }
+
+    /** Renders a single icon glyph in the custom font, white so the artwork keeps its colours. */
+    private static MutableText iconText(String glyph) {
+        if (glyph == null) return null;
+        return Text.literal(glyph)
+                .setStyle(Style.EMPTY.withFont(ICON_FONT).withColor(0xFFFFFF).withBold(false));
+    }
+
+    /** Icon for a detected gamemode id, or null if it has none. */
+    private static MutableText modeIcon(String gamemode) {
+        return gamemode == null ? null : iconText(MODE_GLYPHS.get(gamemode));
+    }
+
+    /** Icon for a rank title (e.g. "Combat Ace" -> combatace), or null. */
+    private static MutableText rankIcon(Title title) {
+        if (title == null || title.name() == null) return null;
+        String key = title.name().toLowerCase(Locale.ROOT).replaceAll("[^a-z0-9]", "");
+        return iconText(RANK_GLYPHS.get(key));
+    }
+
     // ── Badge builder ─────────────────────────────────────────────────────────
 
     /**
      * Builds the coloured tier badge text shown before a player's name.
      *
      * If a gamemode is supplied (the local player's detected mode) and the player
-     * has a placement there, the badge shows that gamemode's tier (e.g. "HT1 | ").
-     * Otherwise it shows the player's independently-computed overall standing —
-     * their rank, coloured by their title — (e.g. "#3 | ").
+     * has a placement there, the badge shows that gamemode's icon + tier
+     * (e.g. "🗡 HT1 | "). Otherwise it shows the player's independently-computed
+     * overall standing — their rank icon + rank, coloured by their title
+     * (e.g. "🏅 #3 | ").
      */
     public static MutableText buildBadge(PlayerTier player, String gamemode) {
         // Gamemode-specific main tier when we know what the player is queued in.
@@ -214,7 +269,7 @@ public class TierRegistry {
                         .setStyle(Style.EMPTY
                                 .withColor(tierColourRgb(te.tier()))
                                 .withBold(bold));
-                return tierPart.append(separator());
+                return withIcon(modeIcon(gamemode), tierPart).append(separator());
             }
         }
 
@@ -226,7 +281,15 @@ public class TierRegistry {
 
         MutableText rankPart = Text.literal("#" + player.rank() + suffix)
                 .setStyle(Style.EMPTY.withColor(colour).withBold(bold));
-        return rankPart.append(separator());
+        return withIcon(rankIcon(player.title()), rankPart).append(separator());
+    }
+
+    /** Prepends an icon glyph (+ a thin space) to a badge part, if the icon exists. */
+    private static MutableText withIcon(MutableText icon, MutableText part) {
+        if (icon == null) return part;
+        return icon.append(Text.literal(" ")
+                        .setStyle(Style.EMPTY.withColor(Formatting.WHITE).withBold(false)))
+                .append(part);
     }
 
     /** Overload — shows overall standing when no gamemode is active. */
