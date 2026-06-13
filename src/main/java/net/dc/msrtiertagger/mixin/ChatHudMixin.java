@@ -39,6 +39,13 @@ public abstract class ChatHudMixin {
 			String raw = original.getString();
 			if (raw == null || raw.isBlank()) return original;
 
+			// Never touch interactive messages. Things like duel requests, party
+			// invites and friend links carry clickEvents; rebuilding the line from
+			// plain text would wipe them, turning the whole message white and
+			// unclickable. Normal chat on these servers has no clickEvents, so it is
+			// still reformatted — only clickable messages are left fully intact.
+			if (hasClickEvent(original)) return original;
+
 			// 1) Try the vanilla insertion (bare username on the clickable name).
 			String token = extractSender(original);
 			PlayerTier player = token != null
@@ -112,6 +119,15 @@ public abstract class ChatHudMixin {
 		if (needle == null || needle.isEmpty()) return -1;
 		return haystack.toLowerCase(java.util.Locale.ROOT)
 				.indexOf(needle.toLowerCase(java.util.Locale.ROOT));
+	}
+
+	/** True if any node in the component tree carries a clickEvent (link/button). */
+	private static boolean hasClickEvent(Text text) {
+		if (text.getStyle().getClickEvent() != null) return true;
+		for (Text sibling : text.getSiblings()) {
+			if (hasClickEvent(sibling)) return true;
+		}
+		return false;
 	}
 
 	/**

@@ -31,32 +31,37 @@ public abstract class PlayerEntityRendererMixin {
         try {
             if (state.displayName == null) return;
 
-            // Resolve the player by UUID first. Servers (e.g. mcpvp.club) wrap the
-            // nametag with team/rank prefixes, so the display-name string is often
-            // NOT the bare username — which is why a name-only lookup showed [?]
-            // even for ranked players. The client always knows the real UUID, so we
-            // match on that and only fall back to the name for entries without one.
             UUID uuid = player.getUuid();
+            MinecraftClient mc = MinecraftClient.getInstance();
+
+            // 1) Try the data.json UUID directly.
             Optional<PlayerTier> opt = uuid != null
                     ? TierRegistry.getByUuid(uuid.toString())
                     : Optional.empty();
+
+            // 2) Resolve by the player's REAL profile name from the tab list. PvP
+            //    servers (mcpvp, oceania) replace opponents' nametags with team /
+            //    scoreboard text that no longer contains the username, and hand them
+            //    an entity UUID that doesn't match data.json — so neither the UUID
+            //    lookup nor scanning the visible name found them, and only your own
+            //    (clean) nametag ever resolved. The tab-list GameProfile keeps the
+            //    true Mojang username no matter how the nametag is rendered.
+            if (opt.isEmpty() && uuid != null && mc != null && mc.getNetworkHandler() != null) {
+                var entry = mc.getNetworkHandler().getPlayerListEntry(uuid);
+                if (entry != null && entry.getProfile() != null) {
+                    opt = TierRegistry.getByUsername(entry.getProfile().name());
+                }
+            }
+
+            // 3) Last resort: scan the wrapped nametag text for a known username token.
             if (opt.isEmpty()) {
-                // Resolve by name from the wrapped nametag text. Two modded players
-                // standing next to each other used to see only plain white names on
-                // each other: mcpvp.club assigns remote players an entity UUID that
-                // doesn't match data.json (the local player resolves fine, so it's a
-                // remote-UUID issue), AND the nametag is wrapped with team/rank
-                // prefixes — so a whole-string getByUsername never matched either.
-                // Scanning the wrapped text for a known username token fixes both.
-                String shown = state.displayName.getString();
-                opt = TierRegistry.scanForPlayer(shown);
+                opt = TierRegistry.scanForPlayer(state.displayName.getString());
             }
             if (opt.isEmpty()) return; // not a ranked player — leave the nametag as-is
 
             PlayerTier tier = opt.get();
 
             // Use gamemode-specific tier for the local player, overall for everyone else.
-            MinecraftClient mc = MinecraftClient.getInstance();
             boolean isLocalPlayer = mc != null && mc.player != null
                     && uuid != null && mc.player.getUuid().equals(uuid);
             String gamemode = isLocalPlayer
