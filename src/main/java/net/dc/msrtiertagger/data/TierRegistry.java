@@ -301,6 +301,57 @@ public class TierRegistry {
         return separator();
     }
 
+    /** Grey " - " separator used between the parts of the chat line. */
+    private static MutableText dash() {
+        return Text.literal(" - ")
+                .setStyle(Style.EMPTY.withColor(Formatting.GRAY).withBold(false));
+    }
+
+    /**
+     * Builds a fully reformatted chat line for a ranked player, in the form:
+     *
+     *     icon - tier/rank - colouredName: message
+     *
+     * The icon + tier/rank use the player's detected gamemode tier when we know it
+     * (the local player) and otherwise their overall standing (#rank), exactly like
+     * the nametag badge. The name is tinted by the player's highest-priority badge
+     * (see {@link #buildName}; the developer gradient won't animate here since chat
+     * lines are rendered once). The message body is appended in plain white.
+     */
+    public static MutableText buildChatLine(PlayerTier player, String gamemode, String messageBody) {
+        MutableText tierRank;
+        MutableText icon;
+
+        TierEntry te = gamemode != null ? player.tiers().get(gamemode) : null;
+        if (te != null) {
+            boolean bold = te.tier().startsWith("H");
+            String suffix = te.retired() ? " †" : ""; // dagger = retired
+            tierRank = Text.literal(te.tier() + suffix)
+                    .setStyle(Style.EMPTY.withColor(tierColourRgb(te.tier())).withBold(bold));
+            icon = modeIcon(gamemode);
+        } else {
+            boolean bold = player.rank() <= 3;
+            String suffix = player.isFullyRetired() ? " †" : "";
+            int colour = player.title() != null ? player.title().colorRgb() : 0xFFFFFF;
+            tierRank = Text.literal("#" + player.rank() + suffix)
+                    .setStyle(Style.EMPTY.withColor(colour).withBold(bold));
+            icon = rankIcon(player.title());
+        }
+
+        // Append to a neutral empty root so the icon font stays confined to the icon
+        // glyph and never leaks onto the tier/rank letters (same rule as withIcon).
+        MutableText line = Text.empty();
+        if (icon != null) line.append(icon).append(dash());
+        line.append(tierRank).append(dash()).append(buildName(player));
+        line.append(Text.literal(": ")
+                .setStyle(Style.EMPTY.withColor(Formatting.GRAY).withBold(false)));
+        if (messageBody != null && !messageBody.isEmpty()) {
+            line.append(Text.literal(messageBody)
+                    .setStyle(Style.EMPTY.withColor(Formatting.WHITE).withBold(false)));
+        }
+        return line;
+    }
+
     // ── Username colour (badge perk) ────────────────────────────────────────────
     // The highest-priority badge a player holds recolours their username. The
     // hierarchy mirrors the website (most -> least important):
