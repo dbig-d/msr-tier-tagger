@@ -150,6 +150,22 @@ public class TierRegistry {
         return Optional.ofNullable(BY_UUID.get(uuid.toLowerCase(Locale.ROOT)));
     }
 
+    /**
+     * Finds the first ranked player whose username appears as a token in the given
+     * text. Used to resolve players from server-wrapped nametags / chat lines (e.g.
+     * "[Team] xqste »"), where a whole-string username match fails. Minecraft names
+     * are [A-Za-z0-9_], so we split on everything else and match token by token.
+     */
+    public static Optional<PlayerTier> scanForPlayer(String text) {
+        if (text == null || text.isBlank()) return Optional.empty();
+        for (String tok : text.split("[^A-Za-z0-9_]+")) {
+            if (tok.length() < 3) continue; // names are >= 3 chars
+            PlayerTier p = BY_NAME.get(tok.toLowerCase(Locale.ROOT));
+            if (p != null) return Optional.of(p);
+        }
+        return Optional.empty();
+    }
+
     public static boolean isLoaded() { return loaded; }
 
     public static int getPlayerCount() { return BY_NAME.size(); }
@@ -340,8 +356,13 @@ public class TierRegistry {
 
         // Append to a neutral empty root so the icon font stays confined to the icon
         // glyph and never leaks onto the tier/rank letters (same rule as withIcon).
+        // Layout: "icon tier/rank - name: message" — a plain space between the icon
+        // and the tier/rank (no dash), a dash between the tier/rank and the name.
         MutableText line = Text.empty();
-        if (icon != null) line.append(icon).append(dash());
+        if (icon != null) {
+            line.append(icon).append(Text.literal(" ")
+                    .setStyle(Style.EMPTY.withColor(Formatting.WHITE).withBold(false)));
+        }
         line.append(tierRank).append(dash()).append(buildName(player));
         line.append(Text.literal(": ")
                 .setStyle(Style.EMPTY.withColor(Formatting.GRAY).withBold(false)));

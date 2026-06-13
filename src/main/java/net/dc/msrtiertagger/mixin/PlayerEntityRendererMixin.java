@@ -41,10 +41,15 @@ public abstract class PlayerEntityRendererMixin {
                     ? TierRegistry.getByUuid(uuid.toString())
                     : Optional.empty();
             if (opt.isEmpty()) {
+                // Resolve by name from the wrapped nametag text. Two modded players
+                // standing next to each other used to see only plain white names on
+                // each other: mcpvp.club assigns remote players an entity UUID that
+                // doesn't match data.json (the local player resolves fine, so it's a
+                // remote-UUID issue), AND the nametag is wrapped with team/rank
+                // prefixes — so a whole-string getByUsername never matched either.
+                // Scanning the wrapped text for a known username token fixes both.
                 String shown = state.displayName.getString();
-                if (shown != null && !shown.isBlank()) {
-                    opt = TierRegistry.getByUsername(shown);
-                }
+                opt = TierRegistry.scanForPlayer(shown);
             }
             if (opt.isEmpty()) return; // not a ranked player — leave the nametag as-is
 
