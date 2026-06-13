@@ -1,21 +1,21 @@
 {
 	"providers": [
-		{ "type": "bitmap", "file": "msr-tier-tagger:font/modes/sword.png", "ascent": 7, "height": 8, "chars": ["\uE000"] },
-		{ "type": "bitmap", "file": "msr-tier-tagger:font/modes/axe.png", "ascent": 7, "height": 8, "chars": ["\uE001"] },
-		{ "type": "bitmap", "file": "msr-tier-tagger:font/modes/uhc.png", "ascent": 7, "height": 8, "chars": ["\uE002"] },
-		{ "type": "bitmap", "file": "msr-tier-tagger:font/modes/mace.png", "ascent": 7, "height": 8, "chars": ["\uE003"] },
-		{ "type": "bitmap", "file": "msr-tier-tagger:font/modes/crystal.png", "ascent": 7, "height": 8, "chars": ["\uE004"] },
-		{ "type": "bitmap", "file": "msr-tier-tagger:font/modes/dsmp.png", "ascent": 7, "height": 8, "chars": ["\uE005"] },
-		{ "type": "bitmap", "file": "msr-tier-tagger:font/modes/nsmp.png", "ascent": 7, "height": 8, "chars": ["\uE006"] },
-		{ "type": "bitmap", "file": "msr-tier-tagger:font/modes/dpot.png", "ascent": 7, "height": 8, "chars": ["\uE007"] },
-		{ "type": "bitmap", "file": "msr-tier-tagger:font/modes/npot.png", "ascent": 7, "height": 8, "chars": ["\uE008"] },
-		{ "type": "bitmap", "file": "msr-tier-tagger:font/modes/hsmp.png", "ascent": 7, "height": 8, "chars": ["\uE009"] },
-		{ "type": "bitmap", "file": "msr-tier-tagger:font/ranks/combatgrandmaster.png", "ascent": 7, "height": 8, "chars": ["\uE100"] },
-		{ "type": "bitmap", "file": "msr-tier-tagger:font/ranks/combatmaster.png", "ascent": 7, "height": 8, "chars": ["\uE101"] },
-		{ "type": "bitmap", "file": "msr-tier-tagger:font/ranks/combatace.png", "ascent": 7, "height": 8, "chars": ["\uE102"] },
-		{ "type": "bitmap", "file": "msr-tier-tagger:font/ranks/combatspecialist.png", "ascent": 7, "height": 8, "chars": ["\uE103"] },
-		{ "type": "bitmap", "file": "msr-tier-tagger:font/ranks/combatcadet.png", "ascent": 7, "height": 8, "chars": ["\uE104"] },
-		{ "type": "bitmap", "file": "msr-tier-tagger:font/ranks/combatnovice.png", "ascent": 7, "height": 8, "chars": ["\uE105"] },
-		{ "type": "bitmap", "file": "msr-tier-tagger:font/ranks/rookie.png", "ascent": 7, "height": 8, "chars": ["\uE106"] }
+		{ "type": "bitmap", "file": "msr-tier-tagger:font/modes/sword.png", "ascent": 11, "height": 12, "chars": ["\uE000"] },
+		{ "type": "bitmap", "file": "msr-tier-tagger:font/modes/axe.png", "ascent": 11, "height": 12, "chars": ["\uE001"] },
+		{ "type": "bitmap", "file": "msr-tier-tagger:font/modes/uhc.png", "ascent": 11, "height": 12, "chars": ["\uE002"] },
+		{ "type": "bitmap", "file": "msr-tier-tagger:font/modes/mace.png", "ascent": 11, "height": 12, "chars": ["\uE003"] },
+		{ "type": "bitmap", "file": "msr-tier-tagger:font/modes/crystal.png", "ascent": 11, "height": 12, "chars": ["\uE004"] },
+		{ "type": "bitmap", "file": "msr-tier-tagger:font/modes/dsmp.png", "ascent": 11, "height": 12, "chars": ["\uE005"] },
+		{ "type": "bitmap", "file": "msr-tier-tagger:font/modes/nsmp.png", "ascent": 11, "height": 12, "chars": ["\uE006"] },
+		{ "type": "bitmap", "file": "msr-tier-tagger:font/modes/dpot.png", "ascent": 11, "height": 12, "chars": ["\uE007"] },
+		{ "type": "bitmap", "file": "msr-tier-tagger:font/modes/npot.png", "ascent": 11, "height": 12, "chars": ["\uE008"] },
+		{ "type": "bitmap", "file": "msr-tier-tagger:font/modes/hsmp.png", "ascent": 11, "height": 12, "chars": ["\uE009"] },
+		{ "type": "bitmap", "file": "msr-tier-tagger:font/ranks/combatgrandmaster.png", "ascent": 11, "height": 12, "chars": ["\uE100"] },
+		{ "type": "bitmap", "file": "msr-tier-tagger:font/ranks/combatmaster.png", "ascent": 11, "height": 12, "chars": ["\uE101"] },
+		{ "type": "bitmap", "file": "msr-tier-tagger:font/ranks/combatace.png", "ascent": 11, "height": 12, "chars": ["\uE102"] },
+		{ "type": "bitmap", "file": "msr-tier-tagger:font/ranks/combatspecialist.png", "ascent": 11, "height": 12, "chars": ["\uE103"] },
+		{ "type": "bitmap", "file": "msr-tier-tagger:font/ranks/combatcadet.png", "ascent": 11, "height": 12, "chars": ["\uE104"] },
+		{ "type": "bitmap", "file": "msr-tier-tagger:font/ranks/combatnovice.png", "ascent": 11, "height": 12, "chars": ["\uE105"] },
+		{ "type": "bitmap", "file": "msr-tier-tagger:font/ranks/rookie.png", "ascent": 11, "height": 12, "chars": ["\uE106"] }
 	]
 }

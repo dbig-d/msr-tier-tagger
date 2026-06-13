@@ -7,9 +7,6 @@ import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.entity.PlayerLikeEntity;
 import net.minecraft.text.MutableText;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -61,16 +58,18 @@ public abstract class PlayerEntityRendererMixin {
                     ? net.dc.msrtiertagger.data.GamemodeDetector.getCurrentGamemode()
                     : null;
 
-            // Render the canonical MSR name in explicit white — this fully breaks
-            // style inheritance so the name never picks up the tier colour.
-            MutableText whiteName = Text.literal(tier.name())
-                    .setStyle(Style.EMPTY.withColor(Formatting.WHITE).withBold(false));
+            // Render the canonical MSR name, coloured by the player's highest-priority
+            // badge (developer/tester/subtester/retired/premium) — or plain white if
+            // they hold none. buildName sets an explicit colour on the name, which also
+            // breaks style inheritance so it never picks up the tier colour. Rebuilt
+            // every frame so the developer red/white gradient animates.
+            MutableText name = TierRegistry.buildName(tier);
 
             // Put the badge on the RIGHT of the name (e.g. "__bigd | 🗡 HT1").
             // Other mods (e.g. Essentials) draw their own icon to the LEFT of the
             // nametag; keeping our badge on the right avoids colliding with it.
             MutableText badgeCore = TierRegistry.buildBadgeCore(tier, gamemode);
-            state.displayName = whiteName
+            state.displayName = name
                     .append(TierRegistry.separatorText())
                     .append(badgeCore);
 

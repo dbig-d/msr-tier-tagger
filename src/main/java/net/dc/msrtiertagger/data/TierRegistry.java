@@ -301,6 +301,79 @@ public class TierRegistry {
         return separator();
     }
 
+    // ── Username colour (badge perk) ────────────────────────────────────────────
+    // The highest-priority badge a player holds recolours their username. The
+    // hierarchy mirrors the website (most -> least important):
+    //   developer > tester > subtester > retired > premium
+    // Houses are intentionally NOT handled here yet (planned for a later update).
+
+    /** The badge that should recolour the username, highest priority first, or null. */
+    public static String usernameColourBadge(PlayerTier p) {
+        if (p == null) return null;
+        if (p.developer())          return "developer";
+        if (p.tester())             return "tester";
+        if (p.subtester() != null)  return "subtester";
+        if (p.isFullyRetired())     return "retired";
+        if (p.premium())            return "premium";
+        return null;
+    }
+
+    /**
+     * Renders a player's username, coloured by their highest-priority badge:
+     *   premium    -> cyan blue,  retired -> dark gray,  subtester -> purple,
+     *   tester     -> dark golden, developer -> animated flowing red/white gradient.
+     * Players with none of those badges render in plain white (unchanged behaviour).
+     *
+     * Called every frame from the nametag mixin, so the developer gradient animates.
+     */
+    public static MutableText buildName(PlayerTier player) {
+        String name = player != null && player.name() != null ? player.name() : "";
+        String badge = usernameColourBadge(player);
+
+        if ("developer".equals(badge)) {
+            return developerGradientName(name);
+        }
+
+        int colour = switch (badge == null ? "" : badge) {
+            case "tester"    -> 0xB8860B; // dark golden
+            case "subtester" -> 0xB050F0; // purple
+            case "retired"   -> 0x555555; // dark gray
+            case "premium"   -> 0x00BFFF; // cyan blue
+            default          -> 0xFFFFFF; // no perk badge -> plain white
+        };
+        return Text.literal(name)
+                .setStyle(Style.EMPTY.withColor(colour).withBold(false));
+    }
+
+    /**
+     * An animated flowing gradient of red and white, built per-character so each
+     * letter takes a colour sampled from a sine wave that drifts over time — giving
+     * a wave that flows across the name. Recomputed every frame by the nametag mixin.
+     */
+    private static MutableText developerGradientName(String name) {
+        MutableText out = Text.empty();
+        long t = System.currentTimeMillis();
+        final double speed  = 0.004; // phase advance per millisecond (flow speed)
+        final double spread = 0.6;   // phase offset per character (wave tightness)
+        for (int i = 0; i < name.length(); i++) {
+            double f = 0.5 + 0.5 * Math.sin(t * speed + i * spread); // 0..1
+            int colour = lerpColour(0xD00000, 0xFFFFFF, f);          // red <-> white
+            out.append(Text.literal(String.valueOf(name.charAt(i)))
+                    .setStyle(Style.EMPTY.withColor(colour).withBold(false)));
+        }
+        return out;
+    }
+
+    /** Linear interpolation between two packed RGB colours; f in [0,1]. */
+    private static int lerpColour(int a, int b, double f) {
+        int ar = (a >> 16) & 0xFF, ag = (a >> 8) & 0xFF, ab = a & 0xFF;
+        int br = (b >> 16) & 0xFF, bg = (b >> 8) & 0xFF, bb = b & 0xFF;
+        int r = (int) Math.round(ar + (br - ar) * f);
+        int g = (int) Math.round(ag + (bg - ag) * f);
+        int bl = (int) Math.round(ab + (bb - ab) * f);
+        return (r << 16) | (g << 8) | bl;
+    }
+
     /**
      * Appends an icon glyph (after a thin space) to a badge part, if the icon
      * exists — so the badge reads "tier icon" / "#rank icon", with the icon on
@@ -385,8 +458,9 @@ public class TierRegistry {
     /**
      * A ranked player. Tiers and subtiers preserve the string-or-object form via
      * {@link TierEntry}; badges (premium/tester/subtester/house/developer) are
-     * parsed and exposed for future perks (e.g. username colours) but do not yet
-     * change rendering. totalPoints/rank/title are computed, not stored.
+     * parsed and exposed. The highest-priority badge recolours the username (see
+     * {@link #buildName}); houses are reserved for a later update.
+     * totalPoints/rank/title are computed, not stored.
      */
     public record PlayerTier(
             String name,
