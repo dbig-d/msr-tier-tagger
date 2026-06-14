@@ -3,7 +3,6 @@ package net.dc.msrtiertagger.mixin;
 import net.dc.msrtiertagger.data.GamemodeDetector;
 import net.dc.msrtiertagger.data.TierRegistry;
 import net.dc.msrtiertagger.data.TierRegistry.PlayerTier;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.ChatHud;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
@@ -39,12 +38,14 @@ public abstract class ChatHudMixin {
 			String raw = original.getString();
 			if (raw == null || raw.isBlank()) return original;
 
-			// Never touch interactive messages. Things like duel requests, party
-			// invites and friend links carry clickEvents; rebuilding the line from
-			// plain text would wipe them, turning the whole message white and
-			// unclickable. Normal chat on these servers has no clickEvents, so it is
-			// still reformatted — only clickable messages are left fully intact.
-			if (hasClickEvent(original)) return original;
+			// Never touch interactive / rich messages. Duel requests, party invites
+			// and friend links carry clickEvents; advancement ("achievement")
+			// announcements carry hoverEvents that reveal the advancement details on
+			// hover. Rebuilding the line from plain text would wipe both — turning the
+			// message white and inert (no link, no tooltip). Normal chat on these
+			// servers is a plain system message with neither, so it is still
+			// reformatted — only click/hover-rich messages are left fully intact.
+			if (hasInteraction(original)) return original;
 
 			// 1) Try the vanilla insertion (bare username on the clickable name).
 			String token = extractSender(original);
@@ -71,11 +72,12 @@ public abstract class ChatHudMixin {
 
 			String body = stripLeadingSeparator(raw.substring(split + hit.length()));
 
-			// Gamemode tier only makes sense for the local player (we read OUR inventory);
-			// everyone else falls back to overall #rank.
-			String gamemode = isLocalPlayer(player)
-					? GamemodeDetector.getCurrentGamemode()
-					: null;
+			// Use the gamemode currently being played (detected from OUR inventory) for
+			// EVERYONE, not just the local player: on a duel/match server every chatter
+			// is in the same mode, so showing that mode's tier is what the user expects.
+			// In a lobby getCurrentGamemode() is null and everyone falls back to their
+			// overall #rank. This mirrors the nametag badge.
+			String gamemode = GamemodeDetector.getCurrentGamemode();
 
 			return TierRegistry.buildChatLine(player, gamemode, body);
 
@@ -83,17 +85,6 @@ public abstract class ChatHudMixin {
 			// Never crash the client for a cosmetic feature.
 			return original;
 		}
-	}
-
-	/** True if this ranked player is the local client player (by UUID, else name). */
-	private static boolean isLocalPlayer(PlayerTier player) {
-		MinecraftClient mc = MinecraftClient.getInstance();
-		if (mc == null || mc.player == null) return false;
-		if (player.uuid() != null && !player.uuid().isBlank()
-				&& mc.player.getUuid().toString().equalsIgnoreCase(player.uuid())) {
-			return true;
-		}
-		return player.name().equalsIgnoreCase(mc.getSession().getUsername());
 	}
 
 	/** First whitespace-or-separator-delimited token that resolves to a ranked player. */
@@ -121,11 +112,16 @@ public abstract class ChatHudMixin {
 				.indexOf(needle.toLowerCase(java.util.Locale.ROOT));
 	}
 
-	/** True if any node in the component tree carries a clickEvent (link/button). */
-	private static boolean hasClickEvent(Text text) {
-		if (text.getStyle().getClickEvent() != null) return true;
+	/**
+	 * True if any node in the component tree carries a clickEvent (link / button)
+	 * or a hoverEvent (tooltip — e.g. an advancement announcement's details). Such
+	 * messages are left fully intact so their interactivity survives.
+	 */
+	private static boolean hasInteraction(Text text) {
+		if (text.getStyle().getClickEvent() != null
+				|| text.getStyle().getHoverEvent() != null) return true;
 		for (Text sibling : text.getSiblings()) {
-			if (hasClickEvent(sibling)) return true;
+			if (hasInteraction(sibling)) return true;
 		}
 		return false;
 	}
