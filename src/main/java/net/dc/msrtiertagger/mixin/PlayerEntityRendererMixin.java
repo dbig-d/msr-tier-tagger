@@ -39,13 +39,28 @@ public abstract class PlayerEntityRendererMixin {
                     ? TierRegistry.getByUuid(uuid.toString())
                     : Optional.empty();
 
-            // 2) Resolve by the player's REAL profile name from the tab list. PvP
-            //    servers (mcpvp, oceania) replace opponents' nametags with team /
-            //    scoreboard text that no longer contains the username, and hand them
-            //    an entity UUID that doesn't match data.json — so neither the UUID
-            //    lookup nor scanning the visible name found them, and only your own
-            //    (clean) nametag ever resolved. The tab-list GameProfile keeps the
-            //    true Mojang username no matter how the nametag is rendered.
+            // 2) Resolve via the entity's OWN GameProfile — the identity Minecraft
+            //    uses to render the player's skin. PvP servers (mcpvp, oceania) hand
+            //    opponents an entity UUID that doesn't match data.json AND strip the
+            //    username out of the visible nametag, so the UUID lookup, the
+            //    text scan, and even the tab-list lookup (keyed by that same spoofed
+            //    UUID) all miss — leaving only your own clean nametag resolving. The
+            //    entity's GameProfile still carries the real Mojang username (that's
+            //    how the correct skin renders), so match on it.
+            if (opt.isEmpty() && player instanceof net.minecraft.entity.player.PlayerEntity pe) {
+                com.mojang.authlib.GameProfile profile = pe.getGameProfile();
+                if (profile != null) {
+                    if (profile.name() != null && !profile.name().isBlank()) {
+                        opt = TierRegistry.getByUsername(profile.name());
+                    }
+                    if (opt.isEmpty() && profile.id() != null) {
+                        opt = TierRegistry.getByUuid(profile.id().toString());
+                    }
+                }
+            }
+
+            // 3) The tab-list GameProfile, keyed by the entity UUID (works on servers
+            //    that keep the real UUID but wrap the visible nametag).
             if (opt.isEmpty() && uuid != null && mc != null && mc.getNetworkHandler() != null) {
                 var entry = mc.getNetworkHandler().getPlayerListEntry(uuid);
                 if (entry != null && entry.getProfile() != null) {
@@ -53,7 +68,7 @@ public abstract class PlayerEntityRendererMixin {
                 }
             }
 
-            // 3) Last resort: scan the wrapped nametag text for a known username token.
+            // 4) Last resort: scan the wrapped nametag text for a known username token.
             if (opt.isEmpty()) {
                 opt = TierRegistry.scanForPlayer(state.displayName.getString());
             }
@@ -61,12 +76,12 @@ public abstract class PlayerEntityRendererMixin {
 
             PlayerTier tier = opt.get();
 
-            // Use gamemode-specific tier for the local player, overall for everyone else.
-            boolean isLocalPlayer = mc != null && mc.player != null
-                    && uuid != null && mc.player.getUuid().equals(uuid);
-            String gamemode = isLocalPlayer
-                    ? net.dc.msrtiertagger.data.GamemodeDetector.getCurrentGamemode()
-                    : null;
+            // Show the gamemode currently being played (detected from OUR inventory)
+            // for EVERYONE, not just the local player: on a duel/match server every
+            // player you see is in the same mode, so that mode's tier is the right
+            // thing to show on their nametag. In a lobby getCurrentGamemode() is null
+            // and everyone falls back to their overall #rank. Mirrors the chat line.
+            String gamemode = net.dc.msrtiertagger.data.GamemodeDetector.getCurrentGamemode();
 
             // Render the canonical MSR name, coloured by the player's highest-priority
             // badge (developer/tester/subtester/retired/premium) — or plain white if
